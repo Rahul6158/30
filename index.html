@@ -154,22 +154,55 @@
             transform: translateX(5px);
         }
 
-        .task.completed {
-            opacity: 0.7;
-        }
-
-        .task.completed .task-content {
-            text-decoration: line-through;
-            color: var(--text-secondary);
-        }
-
+        /* Custom checkbox styles */
         .task-checkbox {
+            position: relative;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
             margin-right: 15px;
             margin-top: 3px;
-            accent-color: var(--accent);
             cursor: pointer;
-            min-width: 18px;
-            min-height: 18px;
+            transition: var(--transition);
+        }
+
+        .task-checkbox:checked {
+            background-color: var(--green);
+            border-color: var(--green);
+        }
+
+        .task-checkbox:checked::before {
+            content: "✓";
+            position: absolute;
+            color: var(--bg-dark);
+            font-size: 14px;
+            font-weight: bold;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .task-checkbox:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(85, 239, 196, 0.3);
+        }
+
+        /* Completed task styles */
+        .task.completed {
+            opacity: 0.9;
+            border-left-color: var(--green) !important;
+            background-color: rgba(85, 239, 196, 0.1);
+        }
+
+        .task.completed .task-title {
+            color: var(--green);
+        }
+
+        .task.completed .task-description {
+            color: rgba(85, 239, 196, 0.7);
         }
 
         .task-content {
@@ -687,12 +720,26 @@
             if (groupIndex !== -1) {
                 const taskIndex = groups[groupIndex].tasks.findIndex(t => t.id === taskId);
                 if (taskIndex !== -1) {
-                    groups[groupIndex].tasks[taskIndex].completed = !groups[groupIndex].tasks[taskIndex].completed;
+                    const isCompleted = !groups[groupIndex].tasks[taskIndex].completed;
+                    groups[groupIndex].tasks[taskIndex].completed = isCompleted;
+                    
+                    // Change color to green when completed, or back to original when uncompleted
+                    if (isCompleted) {
+                        groups[groupIndex].tasks[taskIndex].color = 'green';
+                    } else {
+                        // You might want to store the original color somewhere if you want to revert back
+                        // For now, we'll just set it to blue as default
+                        groups[groupIndex].tasks[taskIndex].color = 'blue';
+                    }
+                    
                     saveGroups(groups);
                     
                     // Update UI
                     const taskEl = document.querySelector(`[data-task-id="${taskId}"]`);
                     taskEl.classList.toggle('completed');
+                    
+                    // Re-render the task to update its color
+                    renderTask(groupId, groups[groupIndex].tasks[taskIndex]);
                 }
             }
         }
