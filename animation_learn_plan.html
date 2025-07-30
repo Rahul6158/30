@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30-Day Paper Animation Challenge</title>
+    <style>
+        :root {
+            --primary: #6C5CE7;
+            --primary-light: #A29BFE;
+            --secondary: #00CEC9;
+            --dark: #2D3436;
+            --light: #F5F6FA;
+            --accent: #FD79A8;
+            --success: #00B894;
+            --warning: #FDCB6E;
+            --error: #D63031;
+            
+            --card-bg: #ffffff0d;
+            --card-border: #ffffff1a;
+            
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-heading: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 20px rgba(0,0,0,0.1), 0 3px 6px rgba(0,0,0,0.05);
+            
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --radius-full: 999px;
+            
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-xxl: 48px;
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            src: url(https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjg.woff2) format('woff2');
+        }
+        
+        @font-face {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 600;
+            src: url(https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8JHgFVrLEj6Z11lFc-K.woff2) format('woff2');
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--light);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: var(--space-xl);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: var(--space-xxl);
+            padding-bottom: var(--space-lg);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        h1 {
+            font-family: var(--font-heading);
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: var(--space-sm);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--primary-light);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .weeks-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xxl);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .current-date {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--accent-light);
+    background-color: rgba(108, 92, 231, 0.15);
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.daily-reminder {
+    font-size: 1rem;
+    color: var(--yellow);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; text-shadow: 0 0 8px var(--yellow); }
+    100% { opacity: 0.8; }
+}
+
+        .week-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .week-title {
+            font-family: var(--font-heading);
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: var(--space-lg);
+            position: relative;
+            padding-left: var(--space-md);
+        }
+
+        .week-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            border-radius: var(--radius-full);
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--space-lg);
+        }
+
+        .day-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            border: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--space-md);
+        }
+
+        .day-number {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: var(--space-sm);
+            flex-shrink: 0;
+            font-family: var(--font-heading);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .day-title {
+            font-size: 1.2rem;
+            margin: 0;
+            color: white;
+            font-family: var(--font-heading);
+        }
+
+        .completed-checkbox {
+            margin-left: auto;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--success);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .day-description {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: var(--space-md);
+            font-size: 0.95rem;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            color: white;
+            font-size: 1.1rem;
+            margin: var(--space-md) 0 var(--space-sm);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            background: var(--primary);
+            margin-right: var(--space-sm);
+        }
+
+        .video-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .video-link:hover {
+            background: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .video-link::before {
+            content: '▶';
+            margin-right: var(--space-sm);
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+
+        .exercise {
+            background: rgba(0,206,201,0.1);
+            border-left: 3px solid var(--secondary);
+            padding: var(--space-md);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin-top: var(--space-md);
+        }
+
+        .exercise-title {
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: var(--space-xs);
+            display: flex;
+            align-items: center;
+        }
+
+        .exercise-title::before {
+            content: '✏️';
+            margin-right: var(--space-xs);
+        }
+
+        .exercise p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: var(--space-xxl);
+            padding: var(--space-xl) 0;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-full);
+            height: 8px;
+            margin: var(--space-lg) 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: var(--radius-full);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: var(--space-md);
+            }
+            
+            .week-section {
+                padding: var(--space-lg);
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .days-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .day-card {
+                padding: var(--space-md);
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .day-card {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        /* Set different animation delays for cards */
+        .day-card:nth-child(1) { animation-delay: 0.1s; }
+        .day-card:nth-child(2) { animation-delay: 0.2s; }
+        .day-card:nth-child(3) { animation-delay: 0.3s; }
+        .day-card:nth-child(4) { animation-delay: 0.4s; }
+        .day-card:nth-child(5) { animation-delay: 0.5s; }
+        .day-card:nth-child(6) { animation-delay: 0.6s; }
+        .day-card:nth-child(7) { animation-delay: 0.7s; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>30-Day Paper Animation Challenge</h1>
+        <p class="subtitle">Master 2D animation fundamentals using just pencil and paper - no digital tools required</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </header>
+
+    <main class="weeks-container">
+        <!-- Week 1 -->
+        <section class="week-section">
+            <h2 class="week-title">Week 1: Core Principles</h2>
+            <div class="days-grid">
+                <!-- Day 1 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">1</div>
+                        <h3 class="day-title">Introduction to Animation</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Discover the magic behind bringing drawings to life.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc" class="video-link" target="_blank">The Illusion of Life (Pixar)</a>
+                        <a href="https://www.youtube.com/watch?v=uDqjIdI4bF4" class="video-link" target="_blank">History of Animation</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Flipbook Test:</strong> Create a 20-page flipbook showing a simple shape moving across the page. Focus on making the movement smooth and consistent between pages.</p>
+                    </div>
+                </div>
+
+                <!-- Day 2 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">2</div>
+                        <h3 class="day-title">Squash and Stretch</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Give your animations weight and flexibility.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc&t=2m15s" class="video-link" target="_blank">Squash and Stretch Explained</a>
+                        <a href="https://www.youtube.com/watch?v=BarOk2p38LQ" class="video-link" target="_blank">Real-world Examples</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Ball Bounce:</strong> Draw a ball bouncing with proper squash (when it hits the ground) and stretch (when it's falling/rising). Create 5 key drawings showing the full motion.</p>
+                    </div>
+                </div>
+
+                <!-- Day 3 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">3</div>
+                        <h3 class="day-title">Timing and Spacing</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Control the rhythm and speed of your animations.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=KRVhtMxQWRs" class="video-link" target="_blank">Timing Basics</a>
+                        <a href="https://www.youtube.com/watch?v=ajI8iYdX6No" class="video-link" target="_blank">Spacing Charts</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Timing Chart:</strong> Create a timing chart for a pendulum swing showing slow-in/slow-out with at least 7 drawings. Label the keyframes (1), breakdowns (×), and inbetweens (2,3,etc.).</p>
+                    </div>
+                </div>
+
+                <!-- Day 4 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">4</div>
+                        <h3 class="day-title">Anticipation</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Prepare your audience for upcoming actions.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc&t=4m30s" class="video-link" target="_blank">Anticipation Principle</a>
+                        <a href="https://www.youtube.com/watch?v=UyX-8isqXZ0" class="video-link" target="_blank">Examples in Cartoons</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Jump Anticipation:</strong> Draw 3 key poses showing anticipation before a jump: 1) Standing, 2) Squatting down (anticipation), 3) Full extension upward.</p>
+                    </div>
+                </div>
+
+                <!-- Day 5 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">5</div>
+                        <h3 class="day-title">Follow Through</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Make movements feel natural with overlapping action.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc&t=6m50s" class="video-link" target="_blank">Follow Through Explained</a>
+                        <a href="https://www.youtube.com/watch?v=YJsnXfH7eyw" class="video-link" target="_blank">Hair and Clothing Demo</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Dog Tail Wag:</strong> Draw 5 key poses of a dog wagging its tail, showing how the tail movement follows through after the body stops.</p>
+                    </div>
+                </div>
+
+                <!-- Day 6 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">6</div>
+                        <h3 class="day-title">Slow In & Out</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Create realistic acceleration and deceleration.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc&t=5m40s" class="video-link" target="_blank">Easing Explained</a>
+                        <a href="https://www.youtube.com/watch?v=AJdEqssNZ-U" class="video-link" target="_blank">Practical Examples</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Ball Roll:</strong> Draw a ball rolling to a stop with proper slow out (more drawings at the end). Show the spacing getting closer together as it slows.</p>
+                    </div>
+                </div>
+
+                <!-- Day 7 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">7</div>
+                        <h3 class="day-title">Week 1 Review</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Combine all principles into one exercise.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc" class="video-link" target="_blank">12 Principles Recap</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Bouncing Ball with Personality:</strong> Animate a bouncing ball showing anticipation before a big bounce, squash/stretch on impact, and slow in/out. Add follow-through if it has a tail or ears.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Week 2 -->
+        <section class="week-section">
+            <h2 class="week-title">Week 2: Movement & Mechanics</h2>
+            <div class="days-grid">
+                <!-- Day 8 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">8</div>
+                        <h3 class="day-title">Arcs and Paths</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Natural movement follows curved paths.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc&t=7m30s" class="video-link" target="_blank">Arcs Principle</a>
+                        <a href="https://www.youtube.com/watch?v=WX0ZQ_9yDqM" class="video-link" target="_blank">Finding Arcs in Nature</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Arc Diagrams:</strong> Draw the arcs for: 1) A pendulum swing, 2) A bird flying, 3) An arm waving. Then animate a simple object moving along an arc path.</p>
+                    </div>
+                </div>
+
+                <!-- Day 9 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">9</div>
+                        <h3 class="day-title">Secondary Action</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Add richness with supporting movements.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc&t=9m10s" class="video-link" target="_blank">Secondary Action Explained</a>
+                        <a href="https://www.youtube.com/watch?v=4G6VxQ6akqE" class="video-link" target="_blank">Character Examples</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Character Blink:</strong> Draw a simple character walking, then add a blink as secondary action. Make sure the blink doesn't distract from the main walk.</p>
+                    </div>
+                </div>
+
+                <!-- Day 10 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">10</div>
+                        <h3 class="day-title">Exaggeration</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Push movements beyond reality for appeal.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc&t=10m20s" class="video-link" target="_blank">Exaggeration Principle</a>
+                        <a href="https://www.youtube.com/watch?v=3Q4XQ5HUKW4" class="video-link" target="_blank">Cartoon vs. Realistic</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Pushed Expressions:</strong> Draw 3 facial expressions (happy, sad, surprised) first realistically, then with extreme cartoon exaggeration.</p>
+                    </div>
+                </div>
+
+                <!-- Day 11 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">11</div>
+                        <h3 class="day-title">Solid Drawing</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Create volume and weight in drawings.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc&t=11m30s" class="video-link" target="_blank">Solid Drawing Basics</a>
+                        <a href="https://www.youtube.com/watch?v=74HR59yFZ7Y" class="video-link" target="_blank">3D Form Practice</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Basic Shapes:</strong> Draw cubes, spheres and cylinders from different angles, then animate a simple shape turning in 3D space (5 drawings).</p>
+                    </div>
+                </div>
+
+                <!-- Day 12 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">12</div>
+                        <h3 class="day-title">Appeal</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Create charismatic, interesting designs.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc&t=12m40s" class="video-link" target="_blank">Appeal in Design</a>
+                        <a href="https://www.youtube.com/watch?v=ZQY9XxBUxXk" class="video-link" target="_blank">Character Design Tips</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Silhouette Test:</strong> Design 3 simple characters focusing only on their silhouettes. Then refine one with appealing details.</p>
+                    </div>
+                </div>
+
+                <!-- Day 13 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">13</div>
+                        <h3 class="day-title">Weight & Balance</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Make objects feel heavy or light.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=YJsnXfH7eyw" class="video-link" target="_blank">Weight Demonstration</a>
+                        <a href="https://www.youtube.com/watch?v=3dWQ8bY0kXk" class="video-link" target="_blank">Character Weight</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Lifting Objects:</strong> Draw a character lifting 3 different objects (feather, box, heavy rock) showing appropriate weight through body language.</p>
+                    </div>
+                </div>
+
+                <!-- Day 14 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">14</div>
+                        <h3 class="day-title">Week 2 Review</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Combine all principles into one exercise.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=uDqjIdI4bF4" class="video-link" target="_blank">Analyzing Animation</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Character Jump:</strong> Animate a character jumping over an obstacle showing: anticipation, squash/stretch, arcs, follow-through, and proper weight. Use at least 8 key drawings.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Week 3 -->
+        <section class="week-section">
+            <h2 class="week-title">Week 3: Character Animation</h2>
+            <div class="days-grid">
+                <!-- Day 15 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">15</div>
+                        <h3 class="day-title">Walk Cycles</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">The foundation of character movement.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=BarOk2p38LQ" class="video-link" target="_blank">Walk Cycle Basics</a>
+                        <a href="https://www.youtube.com/watch?v=2M7GV1B4r1Q" class="video-link" target="_blank">Key Poses</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Basic Walk:</strong> Draw the 4 key poses of a walk cycle (contact, down, passing, up) for a simple character. Add inbetweens if time allows.</p>
+                    </div>
+                </div>
+
+                <!-- Day 16 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">16</div>
+                        <h3 class="day-title">Personality Walks</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">How walks express character.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=KRVhtMxQWRs" class="video-link" target="_blank">Walk Variations</a>
+                        <a href="https://www.youtube.com/watch?v=UyX-8isqXZ0" class="video-link" target="_blank">Cartoon Walks</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Character Walks:</strong> Draw the same character walking in 3 different moods (happy, tired, sneaky). Focus on posture and timing differences.</p>
+                    </div>
+                </div>
+
+                <!-- Day 17 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">17</div>
+                        <h3 class="day-title">Run Cycles</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Faster movement with more extremes.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=AJdEqssNZ-U" class="video-link" target="_blank">Run vs. Walk</a>
+                        <a href="https://www.youtube.com/watch?v=YJsnXfH7eyw" class="video-link" target="_blank">Run Key Poses</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Basic Run:</strong> Draw the 3 key poses of a run (contact, airborne, recovery) for your character. Note the lean forward and extended limbs.</p>
+                    </div>
+                </div>
+
+                <!-- Day 18 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">18</div>
+                        <h3 class="day-title">Facial Expressions</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Conveying emotion through the face.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=3Q4XQ5HUKW4" class="video-link" target="_blank">Expression Basics</a>
+                        <a href="https://www.youtube.com/watch?v=ZQY9XxBUxXk" class="video-link" target="_blank">Cartoon Expressions</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Emotion Transition:</strong> Draw a character's face changing from happy to sad in 5 steps, focusing on smooth shape changes.</p>
+                    </div>
+                </div>
+
+                <!-- Day 19 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">19</div>
+                        <h3 class="day-title">Lip Sync Basics</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Matching mouth shapes to sounds.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=2M7GV1B4r1Q" class="video-link" target="_blank">Phoneme Shapes</a>
+                        <a href="https://www.youtube.com/watch?v=3dWQ8bY0kXk" class="video-link" target="_blank">Simple Lip Sync</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Mouth Chart:</strong> Draw the basic mouth positions for "Hello" (Neutral, H, E, L, O). Then animate a simple face saying "Hi" in 5 drawings.</p>
+                    </div>
+                </div>
+
+                <!-- Day 20 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">20</div>
+                        <h3 class="day-title">Gesture Drawing</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Capturing dynamic poses quickly.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=74HR59yFZ7Y" class="video-link" target="_blank">Gesture Basics</a>
+                        <a href="https://www.youtube.com/watch?v=uDqjIdI4bF4" class="video-link" target="_blank">30-Second Poses</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Quick Sketches:</strong> Do 10 gesture drawings (30 seconds each) of people or characters in action poses. Focus on flow and energy, not details.</p>
+                    </div>
+                </div>
+
+                <!-- Day 21 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">21</div>
+                        <h3 class="day-title">Week 3 Review</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Combine character animation skills.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=BarOk2p38LQ" class="video-link" target="_blank">Character Animation Demo</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Character Performance:</strong> Animate a character reacting to something off-screen (surprise, then reaction). Include facial expressions and body language (minimum 10 drawings).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Week 4 -->
+        <section class="week-section">
+            <h2 class="week-title">Week 4: Storytelling & Scenes</h2>
+            <div class="days-grid">
+                <!-- Day 22 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">22</div>
+                        <h3 class="day-title">Staging & Composition</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Directing the viewer's eye.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc&t=3m20s" class="video-link" target="_blank">Staging Principle</a>
+                        <a href="https://www.youtube.com/watch?v=4G6VxQ6akqE" class="video-link" target="_blank">Film Composition</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Scene Layout:</strong> Draw 3 different compositions for the same scene (character finding a key). Experiment with camera angles and character placement.</p>
+                    </div>
+                </div>
+
+                <!-- Day 23 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">23</div>
+                        <h3 class="day-title">Storyboarding Basics</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Planning visual sequences.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=WX0ZQ_9yDqM" class="video-link" target="_blank">Storyboard Intro</a>
+                        <a href="https://www.youtube.com/watch?v=KRVhtMxQWRs" class="video-link" target="_blank">Shot Types</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>3-Panel Story:</strong> Create a simple 3-panel storyboard showing: 1) Character sees something, 2) Reacts, 3) Takes action. Add basic notes about timing.</p>
+                    </div>
+                </div>
+
+                <!-- Day 24 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">24</div>
+                        <h3 class="day-title">Thumbnailing Actions</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Planning movement sequences.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=UyX-8isqXZ0" class="video-link" target="_blank">Thumbnail Process</a>
+                        <a href="https://www.youtube.com/watch?v=AJdEqssNZ-U" class="video-link" target="_blank">Action Planning</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Action Sequence:</strong> Create 5 thumbnail sketches planning out a character picking up a heavy box. Focus on key poses and timing.</p>
+                    </div>
+                </div>
+
+                <!-- Day 25 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">25</div>
+                        <h3 class="day-title">Scene Timing</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Pacing for storytelling.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=YJsnXfH7eyw" class="video-link" target="_blank">Timing for Emotion</a>
+                        <a href="https://www.youtube.com/watch?v=3Q4XQ5HUKW4" class="video-link" target="_blank">Beat Planning</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Timing Sheet:</strong> Plan out a 10-second scene (character hears noise, looks, reacts) using a timing sheet with key actions marked in seconds.</p>
+                    </div>
+                </div>
+
+                <!-- Day 26 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">26</div>
+                        <h3 class="day-title">Keyframe Drawing</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Identifying the most important poses.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=ZQY9XxBUxXk" class="video-link" target="_blank">Key Poses</a>
+                        <a href="https://www.youtube.com/watch?v=74HR59yFZ7Y" class="video-link" target="_blank">Strong Posing</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Key Pose Test:</strong> For a simple action (opening a door), draw only the 3 most important key poses that define the action.</p>
+                    </div>
+                </div>
+
+                <!-- Day 27 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">27</div>
+                        <h3 class="day-title">Breakdowns & Inbetweens</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Filling in the movement between keys.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=2M7GV1B4r1Q" class="video-link" target="_blank">Inbetweening</a>
+                        <a href="https://www.youtube.com/watch?v=3dWQ8bY0kXk" class="video-link" target="_blank">Smooth Transitions</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Pose Transition:</strong> Draw 2 key poses (character standing and sitting), then add 1 breakdown and 2 inbetweens to smooth the action.</p>
+                    </div>
+                </div>
+
+                <!-- Day 28 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">28</div>
+                        <h3 class="day-title">Final Project Planning</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Developing your short animation.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=uDqjIdI4bF4" class="video-link" target="_blank">Animation Process</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Concept Development:</strong> Plan your final project: 1) Write a simple premise (1-2 sentences), 2) List key actions, 3) Sketch 3 important poses.</p>
+                    </div>
+                </div>
+
+                <!-- Day 29 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">29</div>
+                        <h3 class="day-title">Final Thumbnails</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Visualizing your entire scene.</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=BarOk2p38LQ" class="video-link" target="_blank">Scene Planning</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Full Thumbnail Pass:</strong> Create thumbnail sketches for your entire animation (15-30 drawings). Mark timing notes where actions occur.</p>
+                    </div>
+                </div>
+
+                <!-- Day 30 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-number">30</div>
+                        <h3 class="day-title">Final Completion</h3>
+                        <input type="checkbox" class="completed-checkbox">
+                    </div>
+                    <p class="day-description">Bringing it all together!</p>
+                    
+                    <h4 class="section-title">Watch & Learn</h4>
+                    <div class="video-links">
+                        <a href="https://www.youtube.com/watch?v=haa7n3UGyDc" class="video-link" target="_blank">12 Principles Recap</a>
+                    </div>
+                    
+                    <div class="exercise">
+                        <div class="exercise-title">Paper Exercise</div>
+                        <p><strong>Final Animation:</strong> Complete your short paper animation (5-15 seconds). Present as: 1) Clean keyframe drawings, 2) Timing chart, 3) Flipbook or storyboard.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>🎉 Congratulations on completing the 30-Day Paper Animation Challenge! 🎉</p>
+        <p>Remember: Animation is a lifelong learning process. Keep practicing with these fundamentals.</p>
+    </footer>
+
+    <script>
+        // Progress tracking functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.completed-checkbox');
+            const progressBar = document.getElementById('progressBar');
+            
+            // Load saved progress from localStorage
+            checkboxes.forEach(checkbox => {
+                const dayNumber = checkbox.closest('.day-card').querySelector('.day-number').textContent;
+                if (localStorage.getItem(`day-${dayNumber}-completed`)) {
+                    checkbox.checked = true;
+                }
+                
+                // Add event listener to save state
+                checkbox.addEventListener('change', function() {
+                    const dayNumber = this.closest('.day-card').querySelector('.day-number').textContent;
+                    if (this.checked) {
+                        localStorage.setItem(`day-${dayNumber}-completed`, 'true');
+                    } else {
+                        localStorage.removeItem(`day-${dayNumber}-completed`);
+                    }
+                    updateProgress();
+                });
+            });
+            
+            function updateProgress() {
+                const completed = document.querySelectorAll('.completed-checkbox:checked').length;
+                const total = checkboxes.length;
+                const percentage = (completed / total) * 100;
+                progressBar.style.width = `${percentage}%`;
+                
+                // Change color based on progress
+                if (percentage < 30) {
+                    progressBar.style.background = 'linear-gradient(to right, var(--error), var(--warning))';
+                } else if (percentage < 70) {
+                    progressBar.style.background = 'linear-gradient(to right, var(--warning), var(--secondary))';
+                } else {
+                    progressBar.style.background = 'linear-gradient(to right, var(--secondary), var(--success))';
+                }
+            }
+            
+            // Initial progress update
+            updateProgress();
+        });
+
+            function addDailyAnimationTask() {
+        const groups = getGroups();
+        const today = new Date().toDateString();
+        
+        // Check if we already added today's task
+        if (localStorage.getItem('lastAnimationTaskDate') === today) return;
+        
+        const defaultGroup = groups.find(g => g.title === 'My Tasks') || groups[0];
+        if (!defaultGroup) return;
+
+        const task = {
+            id: 'daily-animation-' + Date.now(),
+            title: '30 Day Learning Animation Plan',
+            description: 'Learning animation from scratch - implement today\'s lesson',
+            link: 'animation_learn_plan.html',
+            color: 'blue',
+            completed: false
+        };
+
+        defaultGroup.tasks.unshift(task); // Add to top
+        saveGroups(groups);
+        localStorage.setItem('lastAnimationTaskDate', today);
+        
+        // Refresh display if on the page
+        if (document.querySelector(`[data-group-id="${defaultGroup.id}"]`)) {
+            renderGroup(defaultGroup);
+        }
+    }
+
+    function loadTasks() {
+    const groups = getGroups();
+    
+    // Create default groups if none exist
+    if (groups.length === 0) {
+        const defaultGroups = [
+            {
+                id: 'group-learning',
+                title: 'Learning',
+                tasks: []
+            },
+            {
+                id: 'group-default',
+                title: 'My Tasks',
+                tasks: []
+            }
+        ];
+        defaultGroups.forEach(group => saveGroup(group));
+        groups.push(...defaultGroups);
+    }
+    
+    // Render all groups
+    groups.forEach(group => {
+        renderGroup(group);
+    });
+    
+    // Check for daily animation task
+    addDailyAnimationTask();
+}
+
+function updateDateDisplay() {
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    const today = new Date();
+    currentDateEl.innerHTML = `
+        <span class="current-date">${today.toLocaleDateString('en-US', options)}</span>
+        <span class="daily-reminder">✨ Daily Animation Time! ✨</span>
+    `;
+    
+    // Check for daily task when date updates
+    addDailyAnimationTask();
+}
+    </script>
+</body>
+</html>
