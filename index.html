@@ -87,12 +87,26 @@
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
         }
 
         .group-title {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .group-title::before {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .group-collapsed .group-title::before {
+            transform: rotate(-90deg);
         }
 
         .btn {
@@ -137,6 +151,11 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+        }
+
+        .group-collapsed .task-list,
+        .group-collapsed .add-task-form {
+            display: none;
         }
 
         .task {
@@ -462,7 +481,8 @@
                         completed: false,
                         createdDate: today.toISOString(),
                         expirationDate: expirationDate.toISOString()
-                    }]
+                    }],
+                    collapsed: false
                 };
                 saveGroup(group);
                 renderGroup(group);
@@ -487,7 +507,8 @@
             const group = {
                 id: groupId,
                 title: title,
-                tasks: []
+                tasks: [],
+                collapsed: false
             };
             
             saveGroup(group);
@@ -495,19 +516,54 @@
             newGroupTitle.value = '';
         }
 
+        // Toggle group collapse state
+        function toggleGroupCollapse(groupId) {
+            const groups = getGroups();
+            const groupIndex = groups.findIndex(g => g.id === groupId);
+            
+            if (groupIndex !== -1) {
+                groups[groupIndex].collapsed = !groups[groupIndex].collapsed;
+                saveGroups(groups);
+                
+                const groupEl = document.querySelector(`[data-group-id="${groupId}"]`);
+                if (groups[groupIndex].collapsed) {
+                    groupEl.classList.add('group-collapsed');
+                } else {
+                    groupEl.classList.remove('group-collapsed');
+                }
+            }
+        }
+
         // Render a task group
         function renderGroup(group) {
             // Check if group already rendered
-            if (document.querySelector(`[data-group-id="${group.id}"]`)) return;
+            const existingGroupEl = document.querySelector(`[data-group-id="${group.id}"]`);
+            if (existingGroupEl) {
+                existingGroupEl.replaceWith(createGroupElement(group));
+                return;
+            }
             
+            taskContainer.appendChild(createGroupElement(group));
+            
+            // Render existing tasks for this group
+            group.tasks.forEach(task => {
+                renderTask(group.id, task);
+            });
+            
+            // Set up color selection
+            setupColorSelectors(group.id);
+        }
+
+        // Create group HTML element
+        function createGroupElement(group) {
             const groupEl = document.createElement('div');
-            groupEl.className = 'task-group';
+            groupEl.className = `task-group ${group.collapsed ? 'group-collapsed' : ''}`;
             groupEl.dataset.groupId = group.id;
             
             groupEl.innerHTML = `
-                <div class="group-header">
+                <div class="group-header" onclick="toggleGroupCollapse('${group.id}')">
                     <h2 class="group-title">${group.title}</h2>
-                    <div>
+                    <div onclick="event.stopPropagation()">
                         <button class="btn btn-sm" onclick="showAddTaskForm('${group.id}')">Add Task</button>
                         ${group.title !== 'Learning Animation' ? 
                           `<button class="btn btn-sm btn-danger" onclick="deleteGroup('${group.id}')">Delete</button>` : 
@@ -532,15 +588,7 @@
                 </div>
             `;
             
-            taskContainer.appendChild(groupEl);
-            
-            // Render existing tasks for this group
-            group.tasks.forEach(task => {
-                renderTask(group.id, task);
-            });
-            
-            // Set up color selection
-            setupColorSelectors(group.id);
+            return groupEl;
         }
 
         // Show the add task form for a group
@@ -786,7 +834,13 @@
         // Local storage functions
         function saveGroup(group) {
             const groups = getGroups();
-            groups.push(group);
+            const existingIndex = groups.findIndex(g => g.id === group.id);
+            
+            if (existingIndex !== -1) {
+                groups[existingIndex] = group;
+            } else {
+                groups.push(group);
+            }
             localStorage.setItem('taskGroups', JSON.stringify(groups));
         }
 
@@ -811,7 +865,8 @@
                 const defaultGroup = {
                     id: 'group-default',
                     title: 'My Tasks',
-                    tasks: []
+                    tasks: [],
+                    collapsed: false
                 };
                 saveGroup(defaultGroup);
                 renderGroup(defaultGroup);
