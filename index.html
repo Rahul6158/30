@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productivity Task Manager</title>
+    <title>Personal Productivity Manager</title>
     <style>
         :root {
             --bg-dark: #1a1a1a;
@@ -13,10 +13,10 @@
             --text-secondary: #b0b0b0;
             --accent: #6c5ce7;
             --accent-light: #a29bfe;
-            --red: #ff7675;
-            --blue: #74b9ff;
-            --yellow: #ffeaa7;
-            --green: #55efc4;
+            --critical: #ff4757;
+            --high: #ffa502;
+            --medium: #2ed573;
+            --low: #3742fa;
             --border-radius: 8px;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             --transition: all 0.2s ease;
@@ -34,7 +34,7 @@
             color: var(--text-primary);
             line-height: 1.6;
             padding: 20px;
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -46,7 +46,7 @@
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             margin-bottom: 10px;
             background: linear-gradient(to right, var(--accent), var(--accent-light));
             -webkit-background-clip: text;
@@ -55,58 +55,155 @@
         }
 
         .date-display {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--accent-light);
-            margin: 15px 0 25px;
-            padding: 10px 20px;
+            margin: 15px 0;
+            padding: 8px 16px;
             background-color: rgba(108, 92, 231, 0.15);
             border-radius: var(--border-radius);
             display: inline-block;
-            border: 1px solid rgba(108, 92, 231, 0.3);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .container {
+        .auth-section {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .auth-form {
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 15px;
         }
 
-        .task-group {
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .timer-section {
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .timer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .timer-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .timer-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .timer-display {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .tasks-section {
             background-color: var(--bg-card);
             border-radius: var(--border-radius);
             padding: 20px;
             box-shadow: var(--shadow);
         }
 
-        .group-header {
+        .add-task-form {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
         }
 
-        .group-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--accent-light);
+        .form-row {
             display: flex;
+            gap: 10px;
             align-items: center;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
         }
 
-        .group-title::before {
-            content: '▼';
-            font-size: 0.8rem;
+        .task {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: rgba(255, 255, 255, 0.05);
             transition: var(--transition);
+            border-left: 4px solid var(--bg-card);
         }
 
-        .group-collapsed .group-title::before {
-            transform: rotate(-90deg);
+        .task:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .task-critical { border-left-color: var(--critical); }
+        .task-high { border-left-color: var(--high); }
+        .task-medium { border-left-color: var(--medium); }
+        .task-low { border-left-color: var(--low); }
+
+        .task.completed {
+            opacity: 0.7;
+            background-color: rgba(46, 213, 115, 0.1);
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            margin-top: 3px;
+            cursor: pointer;
+        }
+
+        .task-content {
+            flex-grow: 1;
+        }
+
+        .task-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+
+        .task-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+
+        .task-controls {
+            display: flex;
+            gap: 8px;
+            margin-left: 10px;
         }
 
         .btn {
@@ -122,7 +219,6 @@
 
         .btn:hover {
             background-color: var(--accent-light);
-            transform: translateY(-2px);
         }
 
         .btn-sm {
@@ -138,165 +234,41 @@
             background-color: #ff7675;
         }
 
-        .btn-edit {
-            background-color: var(--yellow);
+        .btn-success {
+            background-color: var(--medium);
             color: var(--bg-dark);
         }
 
-        .btn-edit:hover {
-            background-color: #fdcb6e;
+        .btn-success:hover {
+            background-color: #7bed9f;
         }
 
-        .task-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .group-collapsed .task-list,
-        .group-collapsed .add-task-form {
-            display: none;
-        }
-
-        .task {
-            display: flex;
-            align-items: flex-start;
-            padding: 15px;
-            border-radius: var(--border-radius);
-            background-color: rgba(255, 255, 255, 0.05);
-            transition: var(--transition);
-            border-left: 4px solid var(--bg-card);
-        }
-
-        .task:hover {
+        input, textarea, select {
             background-color: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
-        }
-
-        /* Custom checkbox styles */
-        .task-checkbox {
-            position: relative;
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--accent);
-            border-radius: 4px;
-            margin-right: 15px;
-            margin-top: 3px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .task-checkbox:checked {
-            background-color: var(--green);
-            border-color: var(--green);
-        }
-
-        .task-checkbox:checked::before {
-            content: "✓";
-            position: absolute;
-            color: var(--bg-dark);
-            font-size: 14px;
-            font-weight: bold;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .task-checkbox:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(85, 239, 196, 0.3);
-        }
-
-        /* Completed task styles */
-        .task.completed {
-            opacity: 0.9;
-            border-left-color: var(--green) !important;
-            background-color: rgba(85, 239, 196, 0.1);
-        }
-
-        .task.completed .task-title {
-            color: var(--green);
-        }
-
-        .task.completed .task-description {
-            color: rgba(85, 239, 196, 0.7);
-        }
-
-        .task-content {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: 10px;
+            color: var(--text-primary);
+            font-family: inherit;
             flex-grow: 1;
         }
 
-        .task-title {
-            font-weight: 500;
-            margin-bottom: 8px;
-            word-break: break-word;
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            line-height: 1.4;
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
         }
 
-        .task-description {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 8px;
-            word-break: break-word;
-            line-height: 1.5;
-            opacity: 0.9;
+        textarea {
+            resize: vertical;
+            min-height: 60px;
         }
 
-        .task-link {
-            color: var(--accent-light);
-            font-size: 0.9rem;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 5px;
-            transition: var(--transition);
-            padding: 4px 8px;
+        .user-info {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
             background-color: rgba(108, 92, 231, 0.1);
-            border-radius: 4px;
-            border: 1px solid rgba(108, 92, 231, 0.3);
-        }
-
-        .task-link:hover {
-            color: white;
-            background-color: rgba(108, 92, 231, 0.3);
-            text-decoration: none;
-        }
-
-        .task-controls {
-            display: flex;
-            gap: 10px;
-            margin-left: 15px;
-            align-items: center;
-        }
-
-        .color-display {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid var(--bg-card);
-        }
-
-        .color-red { background-color: var(--red); }
-        .color-blue { background-color: var(--blue); }
-        .color-yellow { background-color: var(--yellow); }
-        .color-green { background-color: var(--green); }
-
-        .add-group-form {
-            display: flex;
-            gap: 10px;
-            margin-top: 30px;
-        }
-
-        .add-task-form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
         }
 
         .edit-task-form {
@@ -309,56 +281,9 @@
             border-radius: var(--border-radius);
         }
 
-        .form-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        input, textarea, select {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: var(--border-radius);
-            padding: 10px;
-            color: var(--text-primary);
-            font-family: inherit;
-            flex-grow: 1;
-            margin: 8px;
-            width: 90%;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 60px;
-            margin: 8px;
-        }
-
-        .task-red {
-            border-left-color: var(--red);
-        }
-
-        .task-blue {
-            border-left-color: var(--blue);
-        }
-
-        .task-yellow {
-            border-left-color: var(--yellow);
-        }
-
-        .task-green {
-            border-left-color: var(--green);
-        }
-
-        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .group-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
+            .timer-grid {
+                grid-template-columns: 1fr;
             }
             
             .form-row {
@@ -368,6 +293,7 @@
             .task-controls {
                 margin-left: 0;
                 margin-top: 10px;
+                flex-wrap: wrap;
             }
             
             .task {
@@ -375,354 +301,475 @@
             }
         }
 
-        /* Animation */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .task-group {
+        .task {
             animation: fadeIn 0.3s ease forwards;
-        }
-
-        /* Color options styling */
-        .color-options {
-            display: flex;
-            gap: 8px;
-        }
-
-        .color-option {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: var(--transition);
-        }
-
-        .color-option:hover {
-            transform: scale(1.1);
-        }
-
-        .color-option.selected {
-            border-color: white;
-            box-shadow: 0 0 0 2px var(--bg-card);
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Productivity Task Manager</h1>
+        <h1>Personal Productivity Manager</h1>
         <div class="date-display" id="currentDate"></div>
     </header>
 
-    <div class="container" id="taskContainer">
-        <!-- Task groups will be added here dynamically -->
-    </div>
+    <section class="auth-section" id="authSection">
+        <div class="auth-form" id="loginForm">
+            <h3>Login to Your Account</h3>
+            <div class="form-group">
+                <input type="text" id="loginUsername" placeholder="Username" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="loginPassword" placeholder="Password" required>
+            </div>
+            <div class="form-row">
+                <button class="btn" onclick="login()">Login</button>
+                <button class="btn btn-success" onclick="showRegister()">Create Account</button>
+            </div>
+        </div>
 
-    <div class="add-group-form">
-        <input type="text" id="newGroupTitle" placeholder="Enter new group title">
-        <button class="btn" id="addGroupBtn">Add Group</button>
-    </div>
+        <div class="auth-form" id="registerForm" style="display: none;">
+            <h3>Create New Account</h3>
+            <div class="form-group">
+                <input type="text" id="registerUsername" placeholder="Choose Username" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="registerPassword" placeholder="Choose Password" required>
+            </div>
+            <div class="form-row">
+                <button class="btn btn-success" onclick="register()">Create Account</button>
+                <button class="btn" onclick="showLogin()">Back to Login</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="user-info" id="userInfo" style="display: none;">
+        Welcome, <span id="usernameDisplay"></span>! 
+        <button class="btn btn-sm btn-danger" onclick="logout()" style="margin-left: 10px;">Logout</button>
+    </section>
+
+    <section class="timer-section" id="timerSection" style="display: none;">
+        <h2>⏰ Activity Timers</h2>
+        <div class="timer-grid">
+            <div class="timer-card">
+                <div class="timer-icon">💧</div>
+                <h3>Water Reminder</h3>
+                <div class="timer-display" id="waterTimer">60:00</div>
+                <div class="timer-controls">
+                    <button class="btn btn-sm" onclick="startWaterTimer()">Start</button>
+                    <button class="btn btn-sm btn-danger" onclick="stopWaterTimer()">Stop</button>
+                    <button class="btn btn-sm" onclick="snoozeWaterTimer()">Snooze 5min</button>
+                </div>
+            </div>
+            <div class="timer-card">
+                <div class="timer-icon">🪑</div>
+                <h3>Sit-Stand Reminder</h3>
+                <div class="timer-display" id="sitTimer">40:00</div>
+                <div class="timer-controls">
+                    <button class="btn btn-sm" onclick="startSitTimer()">Start</button>
+                    <button class="btn btn-sm btn-danger" onclick="stopSitTimer()">Stop</button>
+                    <button class="btn btn-sm" onclick="snoozeSitTimer()">Snooze 5min</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tasks-section" id="tasksSection" style="display: none;">
+        <h2>✅ Tasks</h2>
+        <div class="add-task-form">
+            <input type="text" id="newTaskTitle" placeholder="Task title" required>
+            <textarea id="newTaskDescription" placeholder="Description (optional)"></textarea>
+            <div class="form-row">
+                <select id="newTaskPriority">
+                    <option value="critical">🔴 Critical</option>
+                    <option value="high">🟠 High</option>
+                    <option value="medium" selected>🟢 Medium</option>
+                    <option value="low">🔵 Low</option>
+                </select>
+                <button class="btn" onclick="addTask()">Add Task</button>
+            </div>
+        </div>
+        <div class="task-list" id="taskList"></div>
+    </section>
 
     <script>
+        // JSONBin Configuration
+        const JSONBIN_MASTER_KEY = '$2a$10$Zvs9GnQFn58NfRB2viPmW.BTGobRxxEI6xuQYDFPxSe21lfZN9Gg.';
+        const JSONBIN_ACCESS_KEY = '$2a$10$WYK7rOJq/hWJhfxQaJsYeeJp6sOAGQagImSru.jET1lypCd64EP3m';
+        const JSONBIN_BASE_URL = 'https://api.jsonbin.io/v3/b';
+
+        // App State
+        let currentUser = null;
+        let userBinId = null;
+        let tasks = [];
+        let waterTimer = null;
+        let sitTimer = null;
+        let waterTimeLeft = 60 * 60; // 60 minutes in seconds
+        let sitTimeLeft = 40 * 60;   // 40 minutes in seconds
+
         // DOM Elements
         const currentDateEl = document.getElementById('currentDate');
-        const taskContainer = document.getElementById('taskContainer');
-        const newGroupTitle = document.getElementById('newGroupTitle');
-        const addGroupBtn = document.getElementById('addGroupBtn');
+        const authSection = document.getElementById('authSection');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const userInfo = document.getElementById('userInfo');
+        const usernameDisplay = document.getElementById('usernameDisplay');
+        const timerSection = document.getElementById('timerSection');
+        const tasksSection = document.getElementById('tasksSection');
+        const taskList = document.getElementById('taskList');
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             updateDateDisplay();
-            loadTasks();
-            setupEventListeners();
-            addLearningAnimationGroup();
+            checkExistingSession();
         });
 
-        // Update the current date display
         function updateDateDisplay() {
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const today = new Date();
             currentDateEl.textContent = today.toLocaleDateString('en-US', options);
         }
 
-        // Set up event listeners
-        function setupEventListeners() {
-            addGroupBtn.addEventListener('click', addNewGroup);
+        function checkExistingSession() {
+            const savedUser = localStorage.getItem('currentUser');
+            const savedBinId = localStorage.getItem('userBinId');
             
-            // Allow adding group with Enter key
-            newGroupTitle.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    addNewGroup();
-                }
-            });
-        }
-
-        // Add the Learning Animation group with task
-        function addLearningAnimationGroup() {
-            const groups = getGroups();
-            const existingGroup = groups.find(g => g.title === 'Learning Animation');
-            
-            if (!existingGroup) {
-                const today = new Date();
-                const expirationDate = new Date();
-                expirationDate.setDate(today.getDate() + 33); // 33 days from today
-                
-                const group = {
-                    id: 'group-learning',
-                    title: 'Learning Animation',
-                    tasks: [{
-                        id: 'task-animation-plan',
-                        title: '30 Day Animation Challenge',
-                        description: 'Complete today\'s animation exercises from the learning plan',
-                        link: 'animation_learn_plan.html',
-                        color: 'blue',
-                        completed: false,
-                        createdDate: today.toISOString(),
-                        expirationDate: expirationDate.toISOString()
-                    }],
-                    collapsed: false
-                };
-                saveGroup(group);
-                renderGroup(group);
+            if (savedUser && savedBinId) {
+                currentUser = savedUser;
+                userBinId = savedBinId;
+                showAppInterface();
+                loadUserData();
             }
         }
 
-        // Check if animation task can be deleted
-        function canDeleteAnimationTask(task) {
-            if (!task.expirationDate) return true;
-            
-            const today = new Date();
-            const expirationDate = new Date(task.expirationDate);
-            return today > expirationDate;
+        function showLogin() {
+            loginForm.style.display = 'flex';
+            registerForm.style.display = 'none';
         }
 
-        // Add a new task group
-        function addNewGroup() {
-            const title = newGroupTitle.value.trim();
-            if (!title) return;
-            
-            const groupId = 'group-' + Date.now();
-            const group = {
-                id: groupId,
-                title: title,
-                tasks: [],
-                collapsed: false
-            };
-            
-            saveGroup(group);
-            renderGroup(group);
-            newGroupTitle.value = '';
+        function showRegister() {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'flex';
         }
 
-        // Toggle group collapse state
-        function toggleGroupCollapse(groupId) {
-            const groups = getGroups();
-            const groupIndex = groups.findIndex(g => g.id === groupId);
+        async function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
             
-            if (groupIndex !== -1) {
-                groups[groupIndex].collapsed = !groups[groupIndex].collapsed;
-                saveGroups(groups);
-                
-                const groupEl = document.querySelector(`[data-group-id="${groupId}"]`);
-                if (groups[groupIndex].collapsed) {
-                    groupEl.classList.add('group-collapsed');
-                } else {
-                    groupEl.classList.remove('group-collapsed');
-                }
-            }
-        }
-
-        // Render a task group
-        function renderGroup(group) {
-            // Check if group already rendered
-            const existingGroupEl = document.querySelector(`[data-group-id="${group.id}"]`);
-            if (existingGroupEl) {
-                existingGroupEl.replaceWith(createGroupElement(group));
+            if (!username || !password) {
+                alert('Please enter both username and password');
                 return;
             }
-            
-            taskContainer.appendChild(createGroupElement(group));
-            
-            // Render existing tasks for this group
-            group.tasks.forEach(task => {
-                renderTask(group.id, task);
-            });
-            
-            // Set up color selection
-            setupColorSelectors(group.id);
+
+            try {
+                // In a real app, you'd verify credentials properly
+                // For this demo, we'll create a bin ID based on username hash
+                const binId = await getOrCreateUserBin(username, password);
+                
+                currentUser = username;
+                userBinId = binId;
+                
+                localStorage.setItem('currentUser', username);
+                localStorage.setItem('userBinId', binId);
+                
+                showAppInterface();
+                loadUserData();
+                
+            } catch (error) {
+                alert('Login failed: ' + error.message);
+            }
         }
 
-        // Create group HTML element
-        function createGroupElement(group) {
-            const groupEl = document.createElement('div');
-            groupEl.className = `task-group ${group.collapsed ? 'group-collapsed' : ''}`;
-            groupEl.dataset.groupId = group.id;
+        async function register() {
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value.trim();
             
-            groupEl.innerHTML = `
-                <div class="group-header" onclick="toggleGroupCollapse('${group.id}')">
-                    <h2 class="group-title">${group.title}</h2>
-                    <div onclick="event.stopPropagation()">
-                        <button class="btn btn-sm" onclick="showAddTaskForm('${group.id}')">Add Task</button>
-                        ${group.title !== 'Learning Animation' ? 
-                          `<button class="btn btn-sm btn-danger" onclick="deleteGroup('${group.id}')">Delete</button>` : 
-                          ''}
-                    </div>
-                </div>
-                <div class="task-list" id="task-list-${group.id}"></div>
-                <div class="add-task-form" id="add-task-form-${group.id}" style="display: none;">
-                    <input type="text" class="task-title-input" placeholder="Task title" required>
-                    <textarea class="task-description-input" placeholder="Description (optional)"></textarea>
-                    <input type="url" class="task-link-input" placeholder="Link URL (optional)">
-                    <div class="form-row">
-                        <div class="color-options">
-                            <div class="color-option color-red selected" data-color="red"></div>
-                            <div class="color-option color-blue" data-color="blue"></div>
-                            <div class="color-option color-yellow" data-color="yellow"></div>
-                            <div class="color-option color-green" data-color="green"></div>
-                        </div>
-                        <button class="btn btn-sm" onclick="addTask('${group.id}')">Add</button>
-                        <button class="btn btn-sm btn-danger" onclick="hideAddTaskForm('${group.id}')">Cancel</button>
-                    </div>
-                </div>
-            `;
+            if (!username || !password) {
+                alert('Please enter both username and password');
+                return;
+            }
+
+            if (username.length < 3) {
+                alert('Username must be at least 3 characters long');
+                return;
+            }
+
+            try {
+                const binId = await createUserBin(username, password);
+                
+                currentUser = username;
+                userBinId = binId;
+                
+                localStorage.setItem('currentUser', username);
+                localStorage.setItem('userBinId', binId);
+                
+                showAppInterface();
+                loadUserData();
+                
+            } catch (error) {
+                alert('Registration failed: ' + error.message);
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            userBinId = null;
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('userBinId');
+            stopAllTimers();
+            hideAppInterface();
+        }
+
+        function showAppInterface() {
+            authSection.style.display = 'none';
+            userInfo.style.display = 'block';
+            timerSection.style.display = 'block';
+            tasksSection.style.display = 'block';
+            usernameDisplay.textContent = currentUser;
+        }
+
+        function hideAppInterface() {
+            authSection.style.display = 'block';
+            userInfo.style.display = 'none';
+            timerSection.style.display = 'none';
+            tasksSection.style.display = 'none';
+            showLogin();
+        }
+
+        // JSONBin API Functions
+        async function getOrCreateUserBin(username, password) {
+            const binId = generateBinId(username);
             
-            return groupEl;
-        }
-
-        // Show the add task form for a group
-        function showAddTaskForm(groupId) {
-            document.getElementById(`add-task-form-${groupId}`).style.display = 'block';
-        }
-
-        // Hide the add task form
-        function hideAddTaskForm(groupId) {
-            document.getElementById(`add-task-form-${groupId}`).style.display = 'none';
-        }
-
-        // Set up color selection for a group
-        function setupColorSelectors(groupId) {
-            const colorOptions = document.querySelectorAll(`#add-task-form-${groupId} .color-option`);
-            colorOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    colorOptions.forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
+            try {
+                // Try to read the bin first
+                const response = await fetch(`${JSONBIN_BASE_URL}/${binId}`, {
+                    headers: {
+                        'X-Master-Key': JSONBIN_MASTER_KEY,
+                        'X-Access-Key': JSONBIN_ACCESS_KEY
+                    }
                 });
-            });
+                
+                if (response.ok) {
+                    return binId; // Bin exists
+                } else {
+                    // Create new bin
+                    return await createUserBin(username, password);
+                }
+            } catch (error) {
+                throw new Error('Unable to access user data');
+            }
         }
 
-        // Add a new task to a group
-        function addTask(groupId) {
-            const form = document.getElementById(`add-task-form-${groupId}`);
-            const titleInput = form.querySelector('.task-title-input');
-            const descInput = form.querySelector('.task-description-input');
-            const linkInput = form.querySelector('.task-link-input');
-            const selectedColor = form.querySelector('.color-option.selected').dataset.color;
+        async function createUserBin(username, password) {
+            const binId = generateBinId(username);
+            const userData = {
+                username: username,
+                tasks: [],
+                createdAt: new Date().toISOString()
+            };
+
+            const response = await fetch(JSONBIN_BASE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_MASTER_KEY,
+                    'X-Access-Key': JSONBIN_ACCESS_KEY,
+                    'X-Bin-Name': `User: ${username}`
+                },
+                body: JSON.stringify(userData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create user account');
+            }
+
+            const data = await response.json();
+            return data.metadata.id;
+        }
+
+        async function loadUserData() {
+            if (!userBinId) return;
+
+            try {
+                const response = await fetch(`${JSONBIN_BASE_URL}/${userBinId}`, {
+                    headers: {
+                        'X-Master-Key': JSONBIN_MASTER_KEY,
+                        'X-Access-Key': JSONBIN_ACCESS_KEY
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    tasks = data.record.tasks || [];
+                    renderTasks();
+                }
+            } catch (error) {
+                console.error('Failed to load user data:', error);
+            }
+        }
+
+        async function saveUserData() {
+            if (!userBinId) return;
+
+            const userData = {
+                username: currentUser,
+                tasks: tasks,
+                updatedAt: new Date().toISOString()
+            };
+
+            try {
+                await fetch(`${JSONBIN_BASE_URL}/${userBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_MASTER_KEY,
+                        'X-Access-Key': JSONBIN_ACCESS_KEY
+                    },
+                    body: JSON.stringify(userData)
+                });
+            } catch (error) {
+                console.error('Failed to save user data:', error);
+            }
+        }
+
+        function generateBinId(username) {
+            // Simple hash function to generate consistent bin IDs
+            let hash = 0;
+            for (let i = 0; i < username.length; i++) {
+                hash = ((hash << 5) - hash) + username.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash).toString(16).substring(0, 12);
+        }
+
+        // Task Management Functions
+        function addTask() {
+            const titleInput = document.getElementById('newTaskTitle');
+            const descInput = document.getElementById('newTaskDescription');
+            const prioritySelect = document.getElementById('newTaskPriority');
             
             const title = titleInput.value.trim();
             if (!title) {
                 titleInput.focus();
                 return;
             }
-            
+
             const task = {
                 id: 'task-' + Date.now(),
                 title: title,
                 description: descInput.value.trim(),
-                link: linkInput.value.trim(),
-                color: selectedColor,
-                completed: false
+                priority: prioritySelect.value,
+                completed: false,
+                createdAt: new Date().toISOString()
             };
-            
-            // Save to local storage
-            const groups = getGroups();
-            const groupIndex = groups.findIndex(g => g.id === groupId);
-            if (groupIndex !== -1) {
-                groups[groupIndex].tasks.push(task);
-                saveGroups(groups);
-            }
-            
-            // Render the task
-            renderTask(groupId, task);
-            
+
+            tasks.push(task);
+            reorganizePriorities();
+            saveUserData();
+            renderTasks();
+
             // Reset form
             titleInput.value = '';
             descInput.value = '';
-            linkInput.value = '';
-            hideAddTaskForm(groupId);
+            prioritySelect.value = 'medium';
         }
 
-        // Render a task
-        function renderTask(groupId, task) {
-            const taskList = document.getElementById(`task-list-${groupId}`);
+        function reorganizePriorities() {
+            // Sort tasks: incomplete first, then by priority
+            tasks.sort((a, b) => {
+                if (a.completed !== b.completed) {
+                    return a.completed ? 1 : -1;
+                }
+                
+                const priorityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+                return priorityOrder[a.priority] - priorityOrder[b.priority];
+            });
+
+            // Promote priorities if all higher priority tasks are completed
+            const incompleteTasks = tasks.filter(task => !task.completed);
+            const hasCritical = incompleteTasks.some(task => task.priority === 'critical');
+            const hasHigh = incompleteTasks.some(task => task.priority === 'high');
+            const hasMedium = incompleteTasks.some(task => task.priority === 'medium');
+
+            if (!hasCritical && hasHigh) {
+                // Promote first high to critical
+                const firstHigh = incompleteTasks.find(task => task.priority === 'high');
+                if (firstHigh) firstHigh.priority = 'critical';
+            }
             
-            const taskEl = document.createElement('div');
-            taskEl.className = `task task-${task.color} ${task.completed ? 'completed' : ''}`;
-            taskEl.dataset.taskId = task.id;
-            
-            const canDelete = task.id !== 'task-animation-plan' || canDeleteAnimationTask(task);
-            
-            taskEl.innerHTML = `
-                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
-                    onchange="toggleTaskCompletion('${groupId}', '${task.id}')">
-                <div class="task-content">
-                    <div class="task-title">${task.title}</div>
-                    ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
-                    ${task.link ? `<a href="${task.link}" class="task-link" target="_blank">${formatLink(task.link)}</a>` : ''}
-                    <div class="edit-task-form" id="edit-task-${task.id}">
-                        <input type="text" class="edit-task-title" value="${task.title}" placeholder="Task title">
-                        <textarea class="edit-task-description" placeholder="Description">${task.description || ''}</textarea>
-                        <input type="url" class="edit-task-link" value="${task.link || ''}" placeholder="Link URL">
-                        <div class="form-row">
-                            <select class="edit-task-color">
-                                <option value="red" ${task.color === 'red' ? 'selected' : ''}>Red</option>
-                                <option value="blue" ${task.color === 'blue' ? 'selected' : ''}>Blue</option>
-                                <option value="yellow" ${task.color === 'yellow' ? 'selected' : ''}>Yellow</option>
-                                <option value="green" ${task.color === 'green' ? 'selected' : ''}>Green</option>
-                            </select>
-                            <button class="btn btn-sm" onclick="saveTaskEdit('${groupId}', '${task.id}')">Save</button>
-                            <button class="btn btn-sm btn-danger" onclick="cancelTaskEdit('${task.id}')">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="task-controls">
-                    <div class="color-display color-${task.color}"></div>
-                    <button class="btn btn-sm btn-edit" onclick="showTaskEdit('${task.id}')">Edit</button>
-                    ${canDelete ? 
-                      `<button class="btn btn-sm btn-danger" onclick="deleteTask('${groupId}', '${task.id}')">Delete</button>` : 
-                      '<span class="task-expiration">(Locked for 33 days)</span>'}
-                </div>
-            `;
-            
-            // Replace existing task if it's there
-            const existingTask = document.querySelector(`[data-task-id="${task.id}"]`);
-            if (existingTask) {
-                existingTask.replaceWith(taskEl);
-            } else {
-                taskList.appendChild(taskEl);
+            if (!hasCritical && !hasHigh && hasMedium) {
+                // Promote first medium to critical
+                const firstMedium = incompleteTasks.find(task => task.priority === 'medium');
+                if (firstMedium) firstMedium.priority = 'critical';
             }
         }
 
-        // Show task edit form
+        function renderTasks() {
+            taskList.innerHTML = '';
+            
+            tasks.forEach(task => {
+                const taskEl = document.createElement('div');
+                taskEl.className = `task task-${task.priority} ${task.completed ? 'completed' : ''}`;
+                taskEl.dataset.taskId = task.id;
+                
+                taskEl.innerHTML = `
+                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} 
+                        onchange="toggleTaskCompletion('${task.id}')">
+                    <div class="task-content">
+                        <div class="task-title">${task.title}</div>
+                        ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                        <div class="edit-task-form" id="edit-task-${task.id}">
+                            <input type="text" class="edit-task-title" value="${task.title}" placeholder="Task title">
+                            <textarea class="edit-task-description" placeholder="Description">${task.description || ''}</textarea>
+                            <div class="form-row">
+                                <select class="edit-task-priority">
+                                    <option value="critical" ${task.priority === 'critical' ? 'selected' : ''}>🔴 Critical</option>
+                                    <option value="high" ${task.priority === 'high' ? 'selected' : ''}>🟠 High</option>
+                                    <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>🟢 Medium</option>
+                                    <option value="low" ${task.priority === 'low' ? 'selected' : ''}>🔵 Low</option>
+                                </select>
+                                <button class="btn btn-sm" onclick="saveTaskEdit('${task.id}')">Save</button>
+                                <button class="btn btn-sm btn-danger" onclick="cancelTaskEdit('${task.id}')">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-controls">
+                        <button class="btn btn-sm" onclick="showTaskEdit('${task.id}')">Edit</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteTask('${task.id}')">Delete</button>
+                    </div>
+                `;
+                
+                taskList.appendChild(taskEl);
+            });
+        }
+
+        function toggleTaskCompletion(taskId) {
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                tasks[taskIndex].completed = !tasks[taskIndex].completed;
+                reorganizePriorities();
+                saveUserData();
+                renderTasks();
+            }
+        }
+
         function showTaskEdit(taskId) {
-            const editForm = document.getElementById(`edit-task-${taskId}`);
-            editForm.style.display = 'flex';
+            document.getElementById(`edit-task-${taskId}`).style.display = 'flex';
         }
 
-        // Cancel task editing
         function cancelTaskEdit(taskId) {
-            const editForm = document.getElementById(`edit-task-${taskId}`);
-            editForm.style.display = 'none';
+            document.getElementById(`edit-task-${taskId}`).style.display = 'none';
         }
 
-        // Save task edits
-        function saveTaskEdit(groupId, taskId) {
+        function saveTaskEdit(taskId) {
             const editForm = document.getElementById(`edit-task-${taskId}`);
             const titleInput = editForm.querySelector('.edit-task-title');
             const descInput = editForm.querySelector('.edit-task-description');
-            const linkInput = editForm.querySelector('.edit-task-link');
-            const colorSelect = editForm.querySelector('.edit-task-color');
+            const prioritySelect = editForm.querySelector('.edit-task-priority');
             
             const title = titleInput.value.trim();
             if (!title) {
@@ -730,147 +777,130 @@
                 return;
             }
             
-            const groups = getGroups();
-            const groupIndex = groups.findIndex(g => g.id === groupId);
-            
-            if (groupIndex !== -1) {
-                const taskIndex = groups[groupIndex].tasks.findIndex(t => t.id === taskId);
-                if (taskIndex !== -1) {
-                    groups[groupIndex].tasks[taskIndex] = {
-                        ...groups[groupIndex].tasks[taskIndex],
-                        title: title,
-                        description: descInput.value.trim(),
-                        link: linkInput.value.trim(),
-                        color: colorSelect.value
-                    };
-                    
-                    saveGroups(groups);
-                    renderTask(groupId, groups[groupIndex].tasks[taskIndex]);
-                }
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1) {
+                tasks[taskIndex] = {
+                    ...tasks[taskIndex],
+                    title: title,
+                    description: descInput.value.trim(),
+                    priority: prioritySelect.value
+                };
+                
+                reorganizePriorities();
+                saveUserData();
+                renderTasks();
             }
         }
 
-        // Format link for display
-        function formatLink(link) {
-            try {
-                const url = new URL(link);
-                return url.hostname.replace('www.', '');
-            } catch {
-                return 'Visit Link';
-            }
-        }
-
-        // Toggle task completion status
-        function toggleTaskCompletion(groupId, taskId) {
-            const groups = getGroups();
-            const groupIndex = groups.findIndex(g => g.id === groupId);
-            
-            if (groupIndex !== -1) {
-                const taskIndex = groups[groupIndex].tasks.findIndex(t => t.id === taskId);
-                if (taskIndex !== -1) {
-                    const isCompleted = !groups[groupIndex].tasks[taskIndex].completed;
-                    groups[groupIndex].tasks[taskIndex].completed = isCompleted;
-                    
-                    // Change color to green when completed, or back to original when uncompleted
-                    if (isCompleted) {
-                        groups[groupIndex].tasks[taskIndex].color = 'green';
-                    } else {
-                        // You might want to store the original color somewhere if you want to revert back
-                        // For now, we'll just set it to blue as default
-                        groups[groupIndex].tasks[taskIndex].color = 'blue';
-                    }
-                    
-                    saveGroups(groups);
-                    
-                    // Update UI
-                    const taskEl = document.querySelector(`[data-task-id="${taskId}"]`);
-                    taskEl.classList.toggle('completed');
-                    
-                    // Re-render the task to update its color
-                    renderTask(groupId, groups[groupIndex].tasks[taskIndex]);
-                }
-            }
-        }
-
-        // Delete a task
-        function deleteTask(groupId, taskId) {
+        function deleteTask(taskId) {
             if (!confirm('Are you sure you want to delete this task?')) return;
             
-            const groups = getGroups();
-            const groupIndex = groups.findIndex(g => g.id === groupId);
+            tasks = tasks.filter(t => t.id !== taskId);
+            reorganizePriorities();
+            saveUserData();
+            renderTasks();
+        }
+
+        // Timer Functions
+        function startWaterTimer() {
+            stopWaterTimer();
+            waterTimeLeft = 60 * 60; // 60 minutes
+            updateWaterTimerDisplay();
             
-            if (groupIndex !== -1) {
-                const taskIndex = groups[groupIndex].tasks.findIndex(t => t.id === taskId);
-                if (taskIndex !== -1) {
-                    // Check if this is the animation task and if it can be deleted
-                    if (taskId === 'task-animation-plan') {
-                        const task = groups[groupIndex].tasks[taskIndex];
-                        if (!canDeleteAnimationTask(task)) {
-                            alert('This task cannot be deleted yet. It will be available for deletion after 33 days from creation.');
-                            return;
-                        }
-                    }
-                    
-                    groups[groupIndex].tasks = groups[groupIndex].tasks.filter(t => t.id !== taskId);
-                    saveGroups(groups);
-                    
-                    // Remove from UI
-                    document.querySelector(`[data-task-id="${taskId}"]`).remove();
+            waterTimer = setInterval(() => {
+                waterTimeLeft--;
+                updateWaterTimerDisplay();
+                
+                if (waterTimeLeft <= 0) {
+                    showNotification('💧 Water Time!', 'Time to drink some water!');
+                    waterTimeLeft = 60 * 60; // Reset to 60 minutes
                 }
+            }, 1000);
+        }
+
+        function stopWaterTimer() {
+            if (waterTimer) {
+                clearInterval(waterTimer);
+                waterTimer = null;
             }
         }
 
-        // Delete a group
-        function deleteGroup(groupId) {
-            if (!confirm('Are you sure you want to delete this group and all its tasks?')) return;
-            
-            const groups = getGroups().filter(g => g.id !== groupId);
-            saveGroups(groups);
-            
-            // Remove from UI
-            document.querySelector(`[data-group-id="${groupId}"]`).remove();
+        function snoozeWaterTimer() {
+            waterTimeLeft = 5 * 60; // 5 minutes
+            updateWaterTimerDisplay();
         }
 
-        // Local storage functions
-        function saveGroup(group) {
-            const groups = getGroups();
-            const existingIndex = groups.findIndex(g => g.id === group.id);
+        function startSitTimer() {
+            stopSitTimer();
+            sitTimeLeft = 40 * 60; // 40 minutes
+            updateSitTimerDisplay();
             
-            if (existingIndex !== -1) {
-                groups[existingIndex] = group;
-            } else {
-                groups.push(group);
+            sitTimer = setInterval(() => {
+                sitTimeLeft--;
+                updateSitTimerDisplay();
+                
+                if (sitTimeLeft <= 0) {
+                    showNotification('🪑 Break Time!', 'Time to stand up and move for 10 minutes!');
+                    sitTimeLeft = 10 * 60; // 10 minute break
+                }
+            }, 1000);
+        }
+
+        function stopSitTimer() {
+            if (sitTimer) {
+                clearInterval(sitTimer);
+                sitTimer = null;
             }
-            localStorage.setItem('taskGroups', JSON.stringify(groups));
         }
 
-        function saveGroups(groups) {
-            localStorage.setItem('taskGroups', JSON.stringify(groups));
+        function snoozeSitTimer() {
+            sitTimeLeft = 5 * 60; // 5 minutes
+            updateSitTimerDisplay();
         }
 
-        function getGroups() {
-            const groups = localStorage.getItem('taskGroups');
-            return groups ? JSON.parse(groups) : [];
+        function stopAllTimers() {
+            stopWaterTimer();
+            stopSitTimer();
         }
 
-        // Load tasks from local storage
-        function loadTasks() {
-            const groups = getGroups();
-            groups.forEach(group => {
-                renderGroup(group);
-            });
-            
-            // If no groups exist, create default ones
-            if (groups.length === 0) {
-                const defaultGroup = {
-                    id: 'group-default',
-                    title: 'My Tasks',
-                    tasks: [],
-                    collapsed: false
-                };
-                saveGroup(defaultGroup);
-                renderGroup(defaultGroup);
+        function updateWaterTimerDisplay() {
+            const minutes = Math.floor(waterTimeLeft / 60);
+            const seconds = waterTimeLeft % 60;
+            document.getElementById('waterTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateSitTimerDisplay() {
+            const minutes = Math.floor(sitTimeLeft / 60);
+            const seconds = sitTimeLeft % 60;
+            document.getElementById('sitTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function showNotification(title, message) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: message,
+                    icon: '/icon.png'
+                });
+            } else if ('Notification' in window && Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification(title, {
+                            body: message,
+                            icon: '/icon.png'
+                        });
+                    }
+                });
             }
+            
+            // Fallback alert
+            alert(`${title}\n${message}`);
+        }
+
+        // Request notification permission on load
+        if ('Notification' in window) {
+            Notification.requestPermission();
         }
     </script>
 </body>
