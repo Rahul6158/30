@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Productivity Manager</title>
+    <title>Productivity Dashboard</title>
     <style>
         :root {
-            --bg-dark: #1a1a1a;
-            --bg-darker: #121212;
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2c2c2c;
             --bg-card: #2c2c2c;
             --text-primary: #f0f0f0;
             --text-secondary: #b0b0b0;
@@ -17,9 +17,18 @@
             --high: #ffa502;
             --medium: #2ed573;
             --low: #3742fa;
-            --border-radius: 8px;
+            --border-radius: 12px;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            --transition: all 0.2s ease;
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-card: #ffffff;
+            --text-primary: #2d3436;
+            --text-secondary: #636e72;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -30,114 +39,194 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark);
+            background-color: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
             padding: 20px;
-            max-width: 800px;
+            min-height: 100vh;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        header {
-            text-align: center;
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        h1 {
+        [data-theme="light"] .header {
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
             font-size: 2.2rem;
-            margin-bottom: 10px;
             background: linear-gradient(to right, var(--accent), var(--accent-light));
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .date-display {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--accent-light);
-            margin: 15px 0;
-            padding: 8px 16px;
-            background-color: rgba(108, 92, 231, 0.15);
-            border-radius: var(--border-radius);
-            display: inline-block;
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
-        .auth-section {
-            background-color: var(--bg-card);
+        .theme-btn {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
             border-radius: var(--border-radius);
-            padding: 20px;
-            margin-bottom: 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Auth Section */
+        .auth-section {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-bottom: 30px;
             box-shadow: var(--shadow);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .auth-form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
         }
 
-        .timer-section {
-            background-color: var(--bg-card);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .timer-grid {
+        /* Dashboard Grid */
+        .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Timer Cards */
         .timer-card {
-            background-color: rgba(255, 255, 255, 0.05);
+            background: var(--bg-card);
             border-radius: var(--border-radius);
-            padding: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
             text-align: center;
         }
 
         .timer-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            margin-bottom: 15px;
         }
 
         .timer-display {
-            font-size: 1.4rem;
+            font-size: 2.5rem;
             font-weight: bold;
-            margin: 10px 0;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        [data-theme="light"] .timer-progress {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .timer-progress-fill {
+            height: 100%;
+            background: var(--accent);
+            transition: width 1s linear;
         }
 
         .timer-controls {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .tasks-section {
-            background-color: var(--bg-card);
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
             border-radius: var(--border-radius);
             padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* Tasks Section */
+        .tasks-section {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 25px;
             box-shadow: var(--shadow);
         }
 
         .add-task-form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin-bottom: 25px;
             padding-bottom: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] .add-task-form {
+            border-bottom-color: rgba(0, 0, 0, 0.1);
         }
 
         .form-row {
@@ -149,21 +238,25 @@
         .task-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .task {
             display: flex;
             align-items: flex-start;
-            padding: 15px;
+            padding: 18px;
             border-radius: var(--border-radius);
-            background-color: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.05);
             transition: var(--transition);
             border-left: 4px solid var(--bg-card);
         }
 
+        [data-theme="light"] .task {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
         .task:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
         }
 
         .task-critical { border-left-color: var(--critical); }
@@ -173,7 +266,7 @@
 
         .task.completed {
             opacity: 0.7;
-            background-color: rgba(46, 213, 115, 0.1);
+            background: rgba(46, 213, 115, 0.1);
         }
 
         .task-checkbox {
@@ -206,11 +299,12 @@
             margin-left: 10px;
         }
 
+        /* Buttons */
         .btn {
-            background-color: var(--accent);
+            background: var(--accent);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: var(--border-radius);
             cursor: pointer;
             font-weight: 500;
@@ -218,39 +312,53 @@
         }
 
         .btn:hover {
-            background-color: var(--accent-light);
+            background: var(--accent-light);
+            transform: translateY(-2px);
         }
 
         .btn-sm {
-            padding: 5px 10px;
+            padding: 8px 16px;
             font-size: 0.9rem;
         }
 
         .btn-danger {
-            background-color: #d63031;
+            background: #d63031;
         }
 
         .btn-danger:hover {
-            background-color: #ff7675;
+            background: #ff7675;
         }
 
         .btn-success {
-            background-color: var(--medium);
-            color: var(--bg-dark);
+            background: var(--medium);
+            color: var(--bg-primary);
         }
 
         .btn-success:hover {
-            background-color: #7bed9f;
+            background: #7bed9f;
         }
 
+        .btn-warning {
+            background: var(--high);
+            color: var(--bg-primary);
+        }
+
+        /* Inputs */
         input, textarea, select {
-            background-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: var(--border-radius);
-            padding: 10px;
+            padding: 12px;
             color: var(--text-primary);
             font-family: inherit;
             flex-grow: 1;
+        }
+
+        [data-theme="light"] input,
+        [data-theme="light"] textarea,
+        [data-theme="light"] select {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
         }
 
         input:focus, textarea:focus, select:focus {
@@ -260,15 +368,19 @@
 
         textarea {
             resize: vertical;
-            min-height: 60px;
+            min-height: 80px;
         }
 
+        /* User Info */
         .user-info {
-            text-align: center;
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: rgba(108, 92, 231, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--bg-card);
             border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
         }
 
         .edit-task-form {
@@ -276,125 +388,190 @@
             flex-direction: column;
             gap: 10px;
             margin-top: 10px;
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: var(--border-radius);
         }
 
-        @media (max-width: 768px) {
-            .timer-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-row {
-                flex-direction: column;
-            }
-            
-            .task-controls {
-                margin-left: 0;
-                margin-top: 10px;
-                flex-wrap: wrap;
-            }
-            
-            .task {
-                flex-direction: column;
-            }
+        [data-theme="light"] .edit-task-form {
+            background: rgba(0, 0, 0, 0.03);
         }
 
+        /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .task {
-            animation: fadeIn 0.3s ease forwards;
+        .timer-card, .stat-card, .task {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Personal Productivity Manager</h1>
-        <div class="date-display" id="currentDate"></div>
-    </header>
-
-    <section class="auth-section" id="authSection">
-        <div class="auth-form" id="loginForm">
-            <h3>Login to Your Account</h3>
-            <div class="form-group">
-                <input type="text" id="loginUsername" placeholder="Username" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="loginPassword" placeholder="Password" required>
-            </div>
-            <div class="form-row">
-                <button class="btn" onclick="login()">Login</button>
-                <button class="btn btn-success" onclick="showRegister()">Create Account</button>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Productivity Dashboard</h1>
+            <div class="theme-selector">
+                <button class="theme-btn" onclick="setTheme('light')">☀️ Light</button>
+                <button class="theme-btn" onclick="setTheme('dark')">🌙 Dark</button>
+                <button class="theme-btn" onclick="setTheme('system')">💻 System</button>
             </div>
         </div>
 
-        <div class="auth-form" id="registerForm" style="display: none;">
-            <h3>Create New Account</h3>
-            <div class="form-group">
-                <input type="text" id="registerUsername" placeholder="Choose Username" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="registerPassword" placeholder="Choose Password" required>
-            </div>
-            <div class="form-row">
-                <button class="btn btn-success" onclick="register()">Create Account</button>
-                <button class="btn" onclick="showLogin()">Back to Login</button>
-            </div>
-        </div>
-    </section>
-
-    <section class="user-info" id="userInfo" style="display: none;">
-        Welcome, <span id="usernameDisplay"></span>! 
-        <button class="btn btn-sm btn-danger" onclick="logout()" style="margin-left: 10px;">Logout</button>
-    </section>
-
-    <section class="timer-section" id="timerSection" style="display: none;">
-        <h2>⏰ Activity Timers</h2>
-        <div class="timer-grid">
-            <div class="timer-card">
-                <div class="timer-icon">💧</div>
-                <h3>Water Reminder</h3>
-                <div class="timer-display" id="waterTimer">60:00</div>
-                <div class="timer-controls">
-                    <button class="btn btn-sm" onclick="startWaterTimer()">Start</button>
-                    <button class="btn btn-sm btn-danger" onclick="stopWaterTimer()">Stop</button>
-                    <button class="btn btn-sm" onclick="snoozeWaterTimer()">Snooze 5min</button>
+        <!-- Auth Section -->
+        <section class="auth-section" id="authSection">
+            <div class="auth-form" id="loginForm">
+                <h2>Welcome Back</h2>
+                <div class="form-group">
+                    <input type="text" id="loginUsername" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <div class="form-row">
+                    <button class="btn" onclick="login()">Login</button>
+                    <button class="btn btn-success" onclick="showRegister()">Create Account</button>
                 </div>
             </div>
-            <div class="timer-card">
-                <div class="timer-icon">🪑</div>
-                <h3>Sit-Stand Reminder</h3>
-                <div class="timer-display" id="sitTimer">40:00</div>
-                <div class="timer-controls">
-                    <button class="btn btn-sm" onclick="startSitTimer()">Start</button>
-                    <button class="btn btn-sm btn-danger" onclick="stopSitTimer()">Stop</button>
-                    <button class="btn btn-sm" onclick="snoozeSitTimer()">Snooze 5min</button>
+
+            <div class="auth-form" id="registerForm" style="display: none;">
+                <h2>Create Account</h2>
+                <div class="form-group">
+                    <input type="text" id="registerUsername" placeholder="Choose Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="registerPassword" placeholder="Choose Password" required>
+                </div>
+                <div class="form-row">
+                    <button class="btn btn-success" onclick="register()">Create Account</button>
+                    <button class="btn" onclick="showLogin()">Back to Login</button>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="tasks-section" id="tasksSection" style="display: none;">
-        <h2>✅ Tasks</h2>
-        <div class="add-task-form">
-            <input type="text" id="newTaskTitle" placeholder="Task title" required>
-            <textarea id="newTaskDescription" placeholder="Description (optional)"></textarea>
-            <div class="form-row">
-                <select id="newTaskPriority">
-                    <option value="critical">🔴 Critical</option>
-                    <option value="high">🟠 High</option>
-                    <option value="medium" selected>🟢 Medium</option>
-                    <option value="low">🔵 Low</option>
-                </select>
-                <button class="btn" onclick="addTask()">Add Task</button>
+        <!-- Dashboard (Visible after login) -->
+        <div id="dashboard" style="display: none;">
+            <!-- User Info -->
+            <div class="user-info">
+                <span>Welcome, <strong id="usernameDisplay"></strong>!</span>
+                <div style="flex-grow: 1;"></div>
+                <button class="btn btn-sm btn-danger" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalTasks">0</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedTasks">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="waterCount">0</div>
+                    <div class="stat-label">Water Reminders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pomodoroCount">0</div>
+                    <div class="stat-label">Pomodoros</div>
+                </div>
+            </div>
+
+            <!-- Timers -->
+            <div class="dashboard-grid">
+                <!-- Water Timer -->
+                <div class="timer-card">
+                    <div class="timer-icon">💧</div>
+                    <h3>Water Reminder</h3>
+                    <div class="timer-display" id="waterTimer">60:00</div>
+                    <div class="timer-progress">
+                        <div class="timer-progress-fill" id="waterProgress" style="width: 100%"></div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="btn btn-sm" onclick="startWaterTimer()">Start</button>
+                        <button class="btn btn-sm btn-danger" onclick="stopWaterTimer()">Stop</button>
+                        <button class="btn btn-sm btn-warning" onclick="snoozeWaterTimer()">Snooze 10min</button>
+                    </div>
+                </div>
+
+                <!-- Sit-Stand Timer -->
+                <div class="timer-card">
+                    <div class="timer-icon">🪑</div>
+                    <h3>Sit-Stand Reminder</h3>
+                    <div class="timer-display" id="sitTimer">40:00</div>
+                    <div class="timer-progress">
+                        <div class="timer-progress-fill" id="sitProgress" style="width: 100%"></div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="btn btn-sm" onclick="startSitTimer()">Start</button>
+                        <button class="btn btn-sm btn-danger" onclick="stopSitTimer()">Stop</button>
+                        <button class="btn btn-sm btn-warning" onclick="snoozeSitTimer()">Snooze 5min</button>
+                    </div>
+                </div>
+
+                <!-- Pomodoro Timer -->
+                <div class="timer-card">
+                    <div class="timer-icon">🍅</div>
+                    <h3>Pomodoro Timer</h3>
+                    <div class="timer-display" id="pomodoroTimer">25:00</div>
+                    <div class="timer-progress">
+                        <div class="timer-progress-fill" id="pomodoroProgress" style="width: 100%"></div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="btn btn-sm" onclick="startPomodoro()">Start Focus</button>
+                        <button class="btn btn-sm btn-success" onclick="startBreak()">Start Break</button>
+                        <button class="btn btn-sm btn-danger" onclick="stopPomodoro()">Stop</button>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.9rem; color: var(--text-secondary);">
+                        Session: <span id="pomodoroSession">1</span>/4
+                    </div>
+                </div>
+
+                <!-- Timer Tasks -->
+                <div class="timer-card">
+                    <div class="timer-icon">⏱️</div>
+                    <h3>Timer Tasks</h3>
+                    <div class="form-group">
+                        <input type="text" id="timerTaskInput" placeholder="Task to time..." style="margin-bottom: 10px;">
+                        <button class="btn btn-sm" onclick="startTimerTask()">Start Timing</button>
+                    </div>
+                    <div id="activeTimerTasks" style="text-align: left; margin-top: 15px;"></div>
+                </div>
+            </div>
+
+            <!-- Tasks Section -->
+            <div class="tasks-section">
+                <h2 style="margin-bottom: 20px;">📝 Tasks</h2>
+                <div class="add-task-form">
+                    <input type="text" id="newTaskTitle" placeholder="What needs to be done?" required>
+                    <textarea id="newTaskDescription" placeholder="Add details..."></textarea>
+                    <div class="form-row">
+                        <select id="newTaskPriority">
+                            <option value="critical">🔴 Critical</option>
+                            <option value="high">🟠 High</option>
+                            <option value="medium" selected>🟢 Medium</option>
+                            <option value="low">🔵 Low</option>
+                        </select>
+                        <button class="btn" onclick="addTask()">Add Task</button>
+                    </div>
+                </div>
+                <div class="task-list" id="taskList"></div>
             </div>
         </div>
-        <div class="task-list" id="taskList"></div>
-    </section>
+    </div>
 
     <script>
         // JSONBin Configuration
@@ -406,54 +583,75 @@
         let currentUser = null;
         let userBinId = null;
         let tasks = [];
+        let userStats = {
+            waterReminders: 0,
+            pomodorosCompleted: 0,
+            tasksCompleted: 0,
+            totalTasks: 0
+        };
+
+        // Timer States
         let waterTimer = null;
         let sitTimer = null;
-        let waterTimeLeft = 60 * 60; // 60 minutes in seconds
-        let sitTimeLeft = 40 * 60;   // 40 minutes in seconds
+        let pomodoroTimer = null;
+        let activeTimerTasks = new Map();
+        
+        let waterTimeLeft = 60 * 60;
+        let sitTimeLeft = 40 * 60;
+        let pomodoroTimeLeft = 25 * 60;
+        let pomodoroSession = 1;
+        let isPomodoroBreak = false;
 
-        // DOM Elements
-        const currentDateEl = document.getElementById('currentDate');
-        const authSection = document.getElementById('authSection');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const userInfo = document.getElementById('userInfo');
-        const usernameDisplay = document.getElementById('usernameDisplay');
-        const timerSection = document.getElementById('timerSection');
-        const tasksSection = document.getElementById('tasksSection');
-        const taskList = document.getElementById('taskList');
+        // Theme Management
+        function setTheme(theme) {
+            const savedTheme = theme === 'system' ? getSystemTheme() : theme;
+            document.body.setAttribute('data-theme', savedTheme);
+            localStorage.setItem('theme', theme);
+            
+            // Update theme buttons
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function getSystemTheme() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            setTheme(savedTheme);
+        }
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
-            updateDateDisplay();
+            loadTheme();
             checkExistingSession();
+            setupServiceWorker();
         });
 
-        function updateDateDisplay() {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const today = new Date();
-            currentDateEl.textContent = today.toLocaleDateString('en-US', options);
-        }
-
-        function checkExistingSession() {
-            const savedUser = localStorage.getItem('currentUser');
-            const savedBinId = localStorage.getItem('userBinId');
-            
-            if (savedUser && savedBinId) {
-                currentUser = savedUser;
-                userBinId = savedBinId;
-                showAppInterface();
-                loadUserData();
+        // Service Worker for Background Timers
+        async function setupServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    await navigator.serviceWorker.register('/sw.js');
+                    console.log('Service Worker registered');
+                } catch (error) {
+                    console.log('Service Worker registration failed:', error);
+                }
             }
         }
 
+        // Authentication Functions
         function showLogin() {
-            loginForm.style.display = 'flex';
-            registerForm.style.display = 'none';
+            document.getElementById('loginForm').style.display = 'flex';
+            document.getElementById('registerForm').style.display = 'none';
         }
 
         function showRegister() {
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'flex';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'flex';
         }
 
         async function login() {
@@ -466,17 +664,14 @@
             }
 
             try {
-                // In a real app, you'd verify credentials properly
-                // For this demo, we'll create a bin ID based on username hash
-                const binId = await getOrCreateUserBin(username, password);
-                
+                const binId = await authenticateUser(username, password);
                 currentUser = username;
                 userBinId = binId;
                 
                 localStorage.setItem('currentUser', username);
                 localStorage.setItem('userBinId', binId);
                 
-                showAppInterface();
+                showDashboard();
                 loadUserData();
                 
             } catch (error) {
@@ -500,14 +695,13 @@
 
             try {
                 const binId = await createUserBin(username, password);
-                
                 currentUser = username;
                 userBinId = binId;
                 
                 localStorage.setItem('currentUser', username);
                 localStorage.setItem('userBinId', binId);
                 
-                showAppInterface();
+                showDashboard();
                 loadUserData();
                 
             } catch (error) {
@@ -521,31 +715,38 @@
             localStorage.removeItem('currentUser');
             localStorage.removeItem('userBinId');
             stopAllTimers();
-            hideAppInterface();
+            hideDashboard();
         }
 
-        function showAppInterface() {
-            authSection.style.display = 'none';
-            userInfo.style.display = 'block';
-            timerSection.style.display = 'block';
-            tasksSection.style.display = 'block';
-            usernameDisplay.textContent = currentUser;
+        function showDashboard() {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('usernameDisplay').textContent = currentUser;
         }
 
-        function hideAppInterface() {
-            authSection.style.display = 'block';
-            userInfo.style.display = 'none';
-            timerSection.style.display = 'none';
-            tasksSection.style.display = 'none';
+        function hideDashboard() {
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
             showLogin();
         }
 
+        function checkExistingSession() {
+            const savedUser = localStorage.getItem('currentUser');
+            const savedBinId = localStorage.getItem('userBinId');
+            
+            if (savedUser && savedBinId) {
+                currentUser = savedUser;
+                userBinId = savedBinId;
+                showDashboard();
+                loadUserData();
+            }
+        }
+
         // JSONBin API Functions
-        async function getOrCreateUserBin(username, password) {
+        async function authenticateUser(username, password) {
             const binId = generateBinId(username);
             
             try {
-                // Try to read the bin first
                 const response = await fetch(`${JSONBIN_BASE_URL}/${binId}`, {
                     headers: {
                         'X-Master-Key': JSONBIN_MASTER_KEY,
@@ -554,13 +755,14 @@
                 });
                 
                 if (response.ok) {
-                    return binId; // Bin exists
+                    const data = await response.json();
+                    // In a real app, verify password hash here
+                    return binId;
                 } else {
-                    // Create new bin
-                    return await createUserBin(username, password);
+                    throw new Error('Invalid credentials');
                 }
             } catch (error) {
-                throw new Error('Unable to access user data');
+                throw new Error('Authentication failed');
             }
         }
 
@@ -568,7 +770,14 @@
             const binId = generateBinId(username);
             const userData = {
                 username: username,
+                password: btoa(password), // Basic encoding - use proper hashing in production
                 tasks: [],
+                stats: {
+                    waterReminders: 0,
+                    pomodorosCompleted: 0,
+                    tasksCompleted: 0,
+                    totalTasks: 0
+                },
                 createdAt: new Date().toISOString()
             };
 
@@ -605,6 +814,8 @@
                 if (response.ok) {
                     const data = await response.json();
                     tasks = data.record.tasks || [];
+                    userStats = data.record.stats || userStats;
+                    updateStats();
                     renderTasks();
                 }
             } catch (error) {
@@ -618,6 +829,7 @@
             const userData = {
                 username: currentUser,
                 tasks: tasks,
+                stats: userStats,
                 updatedAt: new Date().toISOString()
             };
 
@@ -637,7 +849,6 @@
         }
 
         function generateBinId(username) {
-            // Simple hash function to generate consistent bin IDs
             let hash = 0;
             for (let i = 0; i < username.length; i++) {
                 hash = ((hash << 5) - hash) + username.charCodeAt(i);
@@ -646,7 +857,221 @@
             return Math.abs(hash).toString(16).substring(0, 12);
         }
 
-        // Task Management Functions
+        // Timer Functions
+        function startWaterTimer() {
+            stopWaterTimer();
+            waterTimeLeft = 60 * 60;
+            updateWaterTimerDisplay();
+            
+            waterTimer = setInterval(() => {
+                waterTimeLeft--;
+                updateWaterTimerDisplay();
+                
+                if (waterTimeLeft <= 0) {
+                    userStats.waterReminders++;
+                    updateStats();
+                    showNotification('💧 Water Time!', 'Time to drink some water! Stay hydrated!');
+                    waterTimeLeft = 60 * 60;
+                    saveUserData();
+                }
+            }, 1000);
+        }
+
+        function startSitTimer() {
+            stopSitTimer();
+            sitTimeLeft = 40 * 60;
+            updateSitTimerDisplay();
+            
+            sitTimer = setInterval(() => {
+                sitTimeLeft--;
+                updateSitTimerDisplay();
+                
+                if (sitTimeLeft <= 0) {
+                    showNotification('🪑 Break Time!', 'Time to stand up and move for 10 minutes!');
+                    sitTimeLeft = 10 * 60;
+                }
+            }, 1000);
+        }
+
+        function startPomodoro() {
+            stopPomodoro();
+            isPomodoroBreak = false;
+            pomodoroTimeLeft = 25 * 60;
+            updatePomodoroTimerDisplay();
+            
+            pomodoroTimer = setInterval(() => {
+                pomodoroTimeLeft--;
+                updatePomodoroTimerDisplay();
+                
+                if (pomodoroTimeLeft <= 0) {
+                    userStats.pomodorosCompleted++;
+                    updateStats();
+                    
+                    if (pomodoroSession < 4) {
+                        showNotification('🍅 Break Time!', 'Great job! Take a 5-minute break.');
+                        pomodoroSession++;
+                        pomodoroTimeLeft = 5 * 60;
+                        isPomodoroBreak = true;
+                    } else {
+                        showNotification('🍅 Long Break!', 'Session complete! Take a 15-minute break.');
+                        pomodoroSession = 1;
+                        pomodoroTimeLeft = 15 * 60;
+                        isPomodoroBreak = true;
+                    }
+                    saveUserData();
+                }
+            }, 1000);
+        }
+
+        function startBreak() {
+            stopPomodoro();
+            isPomodoroBreak = true;
+            pomodoroTimeLeft = 5 * 60;
+            updatePomodoroTimerDisplay();
+            
+            pomodoroTimer = setInterval(() => {
+                pomodoroTimeLeft--;
+                updatePomodoroTimerDisplay();
+                
+                if (pomodoroTimeLeft <= 0) {
+                    showNotification('🍅 Break Over!', 'Time to get back to work!');
+                    startPomodoro();
+                }
+            }, 1000);
+        }
+
+        function stopPomodoro() {
+            if (pomodoroTimer) {
+                clearInterval(pomodoroTimer);
+                pomodoroTimer = null;
+            }
+        }
+
+        function stopWaterTimer() {
+            if (waterTimer) {
+                clearInterval(waterTimer);
+                waterTimer = null;
+            }
+        }
+
+        function stopSitTimer() {
+            if (sitTimer) {
+                clearInterval(sitTimer);
+                sitTimer = null;
+            }
+        }
+
+        function stopAllTimers() {
+            stopWaterTimer();
+            stopSitTimer();
+            stopPomodoro();
+        }
+
+        function snoozeWaterTimer() {
+            waterTimeLeft = 10 * 60;
+            updateWaterTimerDisplay();
+        }
+
+        function snoozeSitTimer() {
+            sitTimeLeft = 5 * 60;
+            updateSitTimerDisplay();
+        }
+
+        // Timer Task Functions
+        function startTimerTask() {
+            const taskInput = document.getElementById('timerTaskInput');
+            const taskName = taskInput.value.trim();
+            
+            if (!taskName) {
+                alert('Please enter a task name');
+                return;
+            }
+
+            const taskId = 'timer-' + Date.now();
+            activeTimerTasks.set(taskId, {
+                name: taskName,
+                startTime: Date.now(),
+                elapsed: 0
+            });
+
+            taskInput.value = '';
+            renderTimerTasks();
+        }
+
+        function stopTimerTask(taskId) {
+            const task = activeTimerTasks.get(taskId);
+            if (task) {
+                // You could save the timed task data here
+                activeTimerTasks.delete(taskId);
+                renderTimerTasks();
+            }
+        }
+
+        function renderTimerTasks() {
+            const container = document.getElementById('activeTimerTasks');
+            container.innerHTML = '';
+
+            activeTimerTasks.forEach((task, taskId) => {
+                const taskEl = document.createElement('div');
+                taskEl.style.cssText = 'padding: 10px; margin: 5px 0; background: rgba(255,255,255,0.05); border-radius: 8px;';
+                taskEl.innerHTML = `
+                    <div style="font-weight: bold;">${task.name}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">${formatTime(Date.now() - task.startTime)}</div>
+                    <button class="btn btn-sm btn-danger" onclick="stopTimerTask('${taskId}')" style="margin-top: 5px;">Stop</button>
+                `;
+                container.appendChild(taskEl);
+            });
+
+            // Update timer tasks every second
+            if (activeTimerTasks.size > 0) {
+                setTimeout(renderTimerTasks, 1000);
+            }
+        }
+
+        function formatTime(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            
+            if (hours > 0) {
+                return `${hours}h ${minutes % 60}m`;
+            } else if (minutes > 0) {
+                return `${minutes}m ${seconds % 60}s`;
+            } else {
+                return `${seconds}s`;
+            }
+        }
+
+        // Update timer displays
+        function updateWaterTimerDisplay() {
+            const minutes = Math.floor(waterTimeLeft / 60);
+            const seconds = waterTimeLeft % 60;
+            document.getElementById('waterTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('waterProgress').style.width = `${(waterTimeLeft / (60 * 60)) * 100}%`;
+        }
+
+        function updateSitTimerDisplay() {
+            const minutes = Math.floor(sitTimeLeft / 60);
+            const seconds = sitTimeLeft % 60;
+            document.getElementById('sitTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('sitProgress').style.width = `${(sitTimeLeft / (isPomodoroBreak ? 10 * 60 : 40 * 60)) * 100}%`;
+        }
+
+        function updatePomodoroTimerDisplay() {
+            const minutes = Math.floor(pomodoroTimeLeft / 60);
+            const seconds = pomodoroTimeLeft % 60;
+            document.getElementById('pomodoroTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('pomodoroSession').textContent = pomodoroSession;
+            
+            const totalTime = isPomodoroBreak ? 
+                (pomodoroSession === 4 ? 15 * 60 : 5 * 60) : 25 * 60;
+            document.getElementById('pomodoroProgress').style.width = `${(pomodoroTimeLeft / totalTime) * 100}%`;
+        }
+
+        // Task Management (same as before with priority reorganization)
         function addTask() {
             const titleInput = document.getElementById('newTaskTitle');
             const descInput = document.getElementById('newTaskDescription');
@@ -668,11 +1093,11 @@
             };
 
             tasks.push(task);
+            userStats.totalTasks++;
             reorganizePriorities();
             saveUserData();
             renderTasks();
 
-            // Reset form
             titleInput.value = '';
             descInput.value = '';
             prioritySelect.value = 'medium';
@@ -696,19 +1121,18 @@
             const hasMedium = incompleteTasks.some(task => task.priority === 'medium');
 
             if (!hasCritical && hasHigh) {
-                // Promote first high to critical
                 const firstHigh = incompleteTasks.find(task => task.priority === 'high');
                 if (firstHigh) firstHigh.priority = 'critical';
             }
             
             if (!hasCritical && !hasHigh && hasMedium) {
-                // Promote first medium to critical
                 const firstMedium = incompleteTasks.find(task => task.priority === 'medium');
                 if (firstMedium) firstMedium.priority = 'critical';
             }
         }
 
         function renderTasks() {
+            const taskList = document.getElementById('taskList');
             taskList.innerHTML = '';
             
             tasks.forEach(task => {
@@ -751,9 +1175,13 @@
             const taskIndex = tasks.findIndex(t => t.id === taskId);
             if (taskIndex !== -1) {
                 tasks[taskIndex].completed = !tasks[taskIndex].completed;
+                if (tasks[taskIndex].completed) {
+                    userStats.tasksCompleted++;
+                }
                 reorganizePriorities();
                 saveUserData();
                 renderTasks();
+                updateStats();
             }
         }
 
@@ -795,86 +1223,23 @@
         function deleteTask(taskId) {
             if (!confirm('Are you sure you want to delete this task?')) return;
             
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex !== -1 && !tasks[taskIndex].completed) {
+                userStats.totalTasks--;
+            }
+            
             tasks = tasks.filter(t => t.id !== taskId);
             reorganizePriorities();
             saveUserData();
             renderTasks();
+            updateStats();
         }
 
-        // Timer Functions
-        function startWaterTimer() {
-            stopWaterTimer();
-            waterTimeLeft = 60 * 60; // 60 minutes
-            updateWaterTimerDisplay();
-            
-            waterTimer = setInterval(() => {
-                waterTimeLeft--;
-                updateWaterTimerDisplay();
-                
-                if (waterTimeLeft <= 0) {
-                    showNotification('💧 Water Time!', 'Time to drink some water!');
-                    waterTimeLeft = 60 * 60; // Reset to 60 minutes
-                }
-            }, 1000);
-        }
-
-        function stopWaterTimer() {
-            if (waterTimer) {
-                clearInterval(waterTimer);
-                waterTimer = null;
-            }
-        }
-
-        function snoozeWaterTimer() {
-            waterTimeLeft = 5 * 60; // 5 minutes
-            updateWaterTimerDisplay();
-        }
-
-        function startSitTimer() {
-            stopSitTimer();
-            sitTimeLeft = 40 * 60; // 40 minutes
-            updateSitTimerDisplay();
-            
-            sitTimer = setInterval(() => {
-                sitTimeLeft--;
-                updateSitTimerDisplay();
-                
-                if (sitTimeLeft <= 0) {
-                    showNotification('🪑 Break Time!', 'Time to stand up and move for 10 minutes!');
-                    sitTimeLeft = 10 * 60; // 10 minute break
-                }
-            }, 1000);
-        }
-
-        function stopSitTimer() {
-            if (sitTimer) {
-                clearInterval(sitTimer);
-                sitTimer = null;
-            }
-        }
-
-        function snoozeSitTimer() {
-            sitTimeLeft = 5 * 60; // 5 minutes
-            updateSitTimerDisplay();
-        }
-
-        function stopAllTimers() {
-            stopWaterTimer();
-            stopSitTimer();
-        }
-
-        function updateWaterTimerDisplay() {
-            const minutes = Math.floor(waterTimeLeft / 60);
-            const seconds = waterTimeLeft % 60;
-            document.getElementById('waterTimer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        function updateSitTimerDisplay() {
-            const minutes = Math.floor(sitTimeLeft / 60);
-            const seconds = sitTimeLeft % 60;
-            document.getElementById('sitTimer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        function updateStats() {
+            document.getElementById('totalTasks').textContent = userStats.totalTasks;
+            document.getElementById('completedTasks').textContent = userStats.tasksCompleted;
+            document.getElementById('waterCount').textContent = userStats.waterReminders;
+            document.getElementById('pomodoroCount').textContent = userStats.pomodorosCompleted;
         }
 
         function showNotification(title, message) {
@@ -895,10 +1260,12 @@
             }
             
             // Fallback alert
-            alert(`${title}\n${message}`);
+            if (!document.hidden) {
+                alert(`${title}\n${message}`);
+            }
         }
 
-        // Request notification permission on load
+        // Request notification permission
         if ('Notification' in window) {
             Notification.requestPermission();
         }
