@@ -378,6 +378,64 @@
             color: var(--color-text);
         }
 
+        .sound-controls {
+            display: flex;
+            gap: var(--space-12);
+            align-items: center;
+            margin-top: var(--space-16);
+        }
+
+        .sound-toggle {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--color-gray-300);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--color-primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: var(--space-16);
@@ -407,6 +465,16 @@
                     <span id="permissionStatus">Checking permission...</span>
                 </div>
                 <button class="btn btn-primary" id="requestPermissionBtn">Enable Notifications</button>
+            </div>
+            <div class="sound-controls">
+                <div class="sound-toggle">
+                    <label for="soundToggle">Enable Notification Sound:</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="soundToggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <button class="btn btn-secondary" id="testSoundBtn">Test Sound</button>
             </div>
         </div>
 
@@ -473,6 +541,95 @@
 
     <script>
         let notificationPermission = Notification.permission;
+        let notificationSound = null;
+        let soundLoaded = false;
+
+        // Initialize notification sound
+        function initNotificationSound() {
+            try {
+                // Use the bounceman.mp3 file from the same directory
+                notificationSound = new Audio('bounceman.mp3');
+                
+                notificationSound.preload = 'auto';
+                
+                // Set up event listeners to track sound loading
+                notificationSound.addEventListener('canplaythrough', function() {
+                    soundLoaded = true;
+                    console.log('Notification sound loaded successfully');
+                });
+                
+                notificationSound.addEventListener('error', function(e) {
+                    console.error('Error loading notification sound:', e);
+                    soundLoaded = false;
+                    
+                    // Fallback to a simple beep sound if the MP3 fails to load
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = ctx.createOscillator();
+                    const gainNode = ctx.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+                    
+                    oscillator.type = 'sine';
+                    oscillator.frequency.value = 800;
+                    gainNode.gain.value = 0.1;
+                    
+                    oscillator.start();
+                    setTimeout(() => {
+                        oscillator.stop();
+                    }, 200);
+                });
+                
+            } catch (error) {
+                console.error('Failed to initialize notification sound:', error);
+                soundLoaded = false;
+            }
+        }
+
+        function playNotificationSound() {
+            const soundToggle = document.getElementById('soundToggle');
+            
+            if (soundToggle && soundToggle.checked) {
+                try {
+                    if (notificationSound && soundLoaded) {
+                        // Reset and play the sound
+                        notificationSound.currentTime = 0;
+                        notificationSound.play().catch(e => {
+                            console.warn('Could not play notification sound:', e);
+                            playFallbackSound();
+                        });
+                    } else {
+                        playFallbackSound();
+                    }
+                } catch (error) {
+                    console.error('Error playing notification sound:', error);
+                    playFallbackSound();
+                }
+            }
+        }
+
+        function playFallbackSound() {
+            // Fallback to Web Audio API if the MP3 fails
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.value = 800;
+                gainNode.gain.value = 0.1;
+                
+                oscillator.start();
+                setTimeout(() => {
+                    oscillator.stop();
+                }, 200);
+            } catch (error) {
+                console.error('Could not play fallback sound:', error);
+            }
+        }
 
         function updatePermissionStatus() {
             const statusDot = document.getElementById('statusDot');
@@ -543,6 +700,9 @@
             try {
                 const notification = new Notification(title, options);
                 
+                // Play sound when notification is shown
+                playNotificationSound();
+                
                 notification.onclick = function() {
                     window.focus();
                     notification.close();
@@ -580,6 +740,9 @@
 
             container.appendChild(toast);
 
+            // Play sound for toast notifications too
+            playNotificationSound();
+
             setTimeout(() => {
                 if (toast.parentElement) {
                     toast.remove();
@@ -601,25 +764,35 @@
             sendBrowserNotification('Quick Notification', 'This is a quick test notification!');
         }
 
-        document.getElementById('requestPermissionBtn').addEventListener('click', requestNotificationPermission);
+        function testSound() {
+            playNotificationSound();
+            showToast('info', 'Sound Test', 'Notification sound played.');
+        }
 
-        document.getElementById('sendBrowserNotif').addEventListener('click', () => {
-            const title = document.getElementById('notifTitle').value || 'Notification';
-            const body = document.getElementById('notifBody').value || 'You have a new notification.';
-            const iconSelect = document.getElementById('notifIcon').value;
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initNotificationSound();
+            updatePermissionStatus();
             
-            sendBrowserNotification(title, body, iconSelect);
-        });
+            document.getElementById('requestPermissionBtn').addEventListener('click', requestNotificationPermission);
+            document.getElementById('testSoundBtn').addEventListener('click', testSound);
 
-        document.getElementById('sendToast').addEventListener('click', () => {
-            const title = document.getElementById('toastTitle').value || 'Notification';
-            const message = document.getElementById('toastMessage').value || 'This is a notification message.';
-            const type = document.getElementById('toastType').value || 'info';
-            
-            showToast(type, title, message);
-        });
+            document.getElementById('sendBrowserNotif').addEventListener('click', () => {
+                const title = document.getElementById('notifTitle').value || 'Notification';
+                const body = document.getElementById('notifBody').value || 'You have a new notification.';
+                const iconSelect = document.getElementById('notifIcon').value;
+                
+                sendBrowserNotification(title, body, iconSelect);
+            });
 
-        updatePermissionStatus();
+            document.getElementById('sendToast').addEventListener('click', () => {
+                const title = document.getElementById('toastTitle').value || 'Notification';
+                const message = document.getElementById('toastMessage').value || 'This is a notification message.';
+                const type = document.getElementById('toastType').value || 'info';
+                
+                showToast(type, title, message);
+            });
+        });
     </script>
 </body>
 </html>
