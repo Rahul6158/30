@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic Notebook</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">My Journal</h2>
+                <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">🌙</button>
+            </div>
+            <div class="date-display" id="current-date">Monday, October 16</div>
+
+            <div class="action-buttons">
+                <button id="view-journals">View All Journals</button>
+                <button class="secondary" id="new-journal">New Journal</button>
+            </div>
+
+            <div class="action-buttons" id="editor-buttons" style="display: none;">
+                <button id="back-to-journals">← Back</button>
+                <button id="add-page">+ Page</button>
+                <button id="save-journal">Save</button>
+            </div>
+
+            <div id="formatting-toolbar" style="display: none;">
+                <h3 class="section-title">Formatting</h3>
+                <div class="format-controls">
+                    <button id="bold-btn" title="Bold"><b>B</b></button>
+                    <button id="italic-btn" title="Italic"><i>I</i></button>
+                    <button id="underline-btn" title="Underline"><u>U</u></button>
+                    <button id="heading-btn" title="Heading">H1</button>
+                    <button id="bullet-btn" title="Bullet List">•</button>
+                    <button id="number-btn" title="Numbered List">1.</button>
+                </div>
+            </div>
+
+            <div id="page-navigation" style="display: none;">
+                <h3 class="section-title">Pages</h3>
+                <div class="page-controls">
+                    <button id="prev-page">← Prev</button>
+                    <span id="page-info">Page 1 of 1</span>
+                    <button id="next-page">Next →</button>
+                </div>
+            </div>
+
+            <div class="sidebar-bottom">
+                <h3 class="section-title">Recent Journals</h3>
+                <ul class="notes-list" id="recent-journals">
+                    <!-- Recent journals will be added here -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="notebook-container">
+            <!-- Left Side: Note Page (70%) -->
+            <div class="note-section">
+                <div class="notebook-page active">
+                    <div class="spiral"></div>
+                    <div class="margin-area"></div>
+                    <div class="margin-line"></div>
+                    <div class="margin-line blue-line"></div>
+
+                    <div class="page-header" contenteditable="true">Today's Journal</div>
+
+                    <div class="horizontal-lines" contenteditable="true">
+                        <!-- Rich text content -->
+                    </div>
+
+                    <div class="page-footer">Page 1</div>
+                </div>
+            </div>
+
+            <!-- Right Side: Tools Panel (30%) -->
+            <div class="tools-panel">
+                <!-- Todo List Section -->
+                <div class="tool-section">
+                    <h3 class="tool-title">Todo List</h3>
+                    <div class="todo-input-container">
+                        <input type="text" id="new-todo" placeholder="Add a new task...">
+                        <button id="add-todo-btn">+</button>
+                    </div>
+                    <ul class="todo-list" id="todo-list">
+                        <!-- Todos will be added here -->
+                    </ul>
+                </div>
+
+                <!-- Important Data Section -->
+                <div class="tool-section">
+                    <h3 class="tool-title">Important Data</h3>
+                    <div class="data-form">
+                        <textarea id="data-note" placeholder="Enter important information..."></textarea>
+                        <button id="save-data-btn">Save</button>
+                    </div>
+                    <div class="saved-data-list" id="saved-data-list">
+                        <!-- Saved data will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="jsonbin-api.js?v=2"></script>
+    <script src="script.js?v=2"></script>
+</body>
+
+</html>

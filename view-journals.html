@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Journals - Read Only</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">View Journals</h2>
+                <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">🌙</button>
+            </div>
+            <div class="date-display" id="current-date">Monday, October 16</div>
+
+            <div class="action-buttons">
+                <button id="refresh-journals">🔄 Refresh</button>
+            </div>
+
+            <div id="page-navigation" style="display: none;">
+                <h3 class="section-title">Pages</h3>
+                <div class="page-controls">
+                    <button id="prev-page">← Prev</button>
+                    <span id="page-info">Page 1 of 1</span>
+                    <button id="next-page">Next →</button>
+                </div>
+            </div>
+
+            <div class="sidebar-bottom">
+                <h3 class="section-title">All Journals</h3>
+                <ul class="notes-list" id="journals-list">
+                    <!-- Journals will be loaded here -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="notebook-container">
+            <div class="journals-grid active" id="journals-grid">
+                <h2 class="grid-title">Select a Journal to View</h2>
+                <div class="journals-container" id="journals-container">
+                    <!-- Journal cards will be added here -->
+                </div>
+            </div>
+
+            <div class="notebook-page" id="notebook-view">
+                <div class="spiral"></div>
+                <div class="margin-area"></div>
+                <div class="margin-line"></div>
+                <div class="margin-line blue-line"></div>
+
+                <div class="page-header" id="journal-title">Journal Title</div>
+
+                <div class="horizontal-lines" id="journal-content">
+                    <!-- Journal content will be displayed here -->
+                </div>
+
+                <div class="page-footer" id="page-footer">Page 1</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="jsonbin-api.js?v=2"></script>
+    <script src="view-journals.js?v=2"></script>
+</body>
+
+</html>

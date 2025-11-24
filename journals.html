@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Journals</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Work Journals</h2>
+                <button id="theme-toggle" class="theme-toggle" title="Toggle Theme">🌙</button>
+            </div>
+            <div class="date-display" id="current-date">Monday, October 16</div>
+
+            <div class="action-buttons">
+                <button id="back-to-main">← Back to Journal</button>
+                <button class="secondary" id="new-journal">New Journal</button>
+            </div>
+        </div>
+
+        <div class="notebook-container">
+            <div class="journals-grid active">
+                <h2 class="grid-title">All Journals</h2>
+                <div class="journals-container" id="journals-container">
+                    <!-- Journal cards will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="jsonbin-api.js?v=2"></script>
+    <script src="journals.js?v=2"></script>
+</body>
+
+</html>
